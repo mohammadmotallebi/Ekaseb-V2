@@ -1,0 +1,21 @@
+# .htaccess main domain to subfolder redirect
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^(www.)?ekaseb.com$
+RewriteCond %{REQUEST_URI} !^/public/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*)$ /public/$1
+
+RewriteCond %{HTTP_HOST} ^(www.)?ekaseb.com$
+
+RewriteRule ^(/)?$ public/index.html [L]
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php81” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

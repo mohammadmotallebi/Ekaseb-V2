@@ -1,0 +1,45 @@
+{
+  "version" : "1.1",
+  "profiles" : [ {
+    "id" : "97137131-610c-466b-bde4-dbb8df2ee2ff",
+    "name" : "Laravel (PHP, BLADE)",
+    "keyNamingPattern" : "SNAKE_CASE_PATTERN",
+    "sink" : {
+      "id" : "aaca2a98-77cb-4b7e-ac7c-f510010626cb",
+      "type" : "namespaced",
+      "translationsDirectory" : "$PROJECT_DIR$/resources/lang",
+      "fileType" : "php",
+      "defaultLocale" : "fa",
+      "namespaces" : [ "lang", "validation" ],
+      "outputFilenameTemplate" : "%locale%/%namespace%.php",
+      "nestingType" : "DOT",
+      "placeholderFormatterName" : "LARAVEL"
+    },
+    "sources" : [ {
+      "id" : "61899687-42f7-4e6a-a180-5f0edcd6d787",
+      "type" : "php",
+      "scopeName" : "i18n Ally: Laravel/PHP source",
+      "scopePattern" : "file[loyalty]:app//*&&!file[loyalty]:app/Broadcasting//*&&!file[loyalty]:app/Console//*&&!file[loyalty]:app/Events//*&&!file[loyalty]:app/Exceptions//*&&!file[loyalty]:app/Models//*&&!file[loyalty]:app/Providers//*",
+      "replacementTemplate" : "trans('%namespace%.%key%', %map%)",
+      "skipDefaultNamespace" : false,
+      "sprintfMode" : false
+    }, {
+      "id" : "0ead3ca9-6da9-47c1-82df-91b7b32b636a",
+      "type" : "blade",
+      "scopeName" : "i18n Ally: Laravel/Blade templates",
+      "scopePattern" : "file[loyalty]:resources/views//*",
+      "replacementTemplate" : "trans('%namespace%.%key%', %map%)",
+      "inlineTagNames" : [ "a", "abbr", "acronym", "b", "bdi", "bdo", "big", "br", "cite", "code", "data", "del", "dfn", "em", "i", "img", "input", "ins", "kbd", "label", "mark", "meter", "output", "progress", "q", "ruby", "s", "samp", "slot", "small", "span", "strong", "sub", "sup", "time", "u", "tt", "var", "wbr" ],
+      "translatableAttributeNames" : [ "title", "alt", "placeholder", "label", "aria-label" ],
+      "skipDefaultNamespace" : false
+    } ]
+  } ],
+  "ignores" : {
+    "valuesInProject" : [ ],
+    "valuesInFile" : { },
+    "filesInProject" : [ ],
+    "unignoredFunctionNames" : [ ],
+    "unignoredFunctionArguments" : { },
+    "ignoredArrayKeys" : [ ]
+  }
+}
