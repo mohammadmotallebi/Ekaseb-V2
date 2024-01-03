@@ -4,7 +4,7 @@ import {
     Block, Button, Col, f7, Fab, Icon, List, ListItem, Navbar, Page, Row, Searchbar, Subnavbar, useStore
 } from "framework7-react";
 import ItemDetailPopup from "../Popups/ItemDetailPopup";
-import {request, getDevice, Dom7 as $$} from "framework7";
+import {getDevice, Dom7 as $$} from "framework7";
 import {number} from "../Helper";
 import AddItemPopup from "../Popups/AddItemPopup";
 import store from '../store/store'
@@ -21,19 +21,22 @@ export default ({f7router}) => {
     const shopId = useStore('shopId');
 
 
-    const initPage = useCallback(() => {
-        request.json(
-            f7.params.home + "get-my-shops-name",
-            function (fetchData) {
-                setShopSelect(fetchData);
-                store.dispatch('setItemDetail', fetchData[0].id)
-                $$("#s_id_g656534")
-                    .find(".item-after")
-                    .text(fetchData[0].shop_name);
-                store.dispatch('setShopId', fetchData[0].id);
-            }
-        );
-    }, [shopSelect, shopId, itemList]);
+    const initPage = async () => {
+          await fetch(f7.params.home + "get-my-shops-name")
+            .then((response) => response.json())
+            .then((data) => {
+                    setShopSelect(data);
+                    store.dispatch('setItemDetail', data[0].id)
+                    $$("#s_id_g656534")
+                        .find(".item-after")
+                        .text(data[0].shop_name);
+                    store.dispatch('setShopId', data[0].id);
+            });
+    }
+
+    useEffect(() => {
+        initPage()
+    }, []);
 
 
    const showAddButton = () => {
@@ -49,14 +52,13 @@ export default ({f7router}) => {
                     easing: "ease-in-out",
                 }
             );
-            store.dispatch("setLoading", false);
     };
 
 
 
 
     return (
-        <Page onPageInit={initPage} onPageAfterIn={showAddButton}>
+        <Page onPageAfterIn={showAddButton}>
             <Navbar title="لیست کالا" innerClass={'current-theme-color'}>
                 <Subnavbar inner={false}>
                     <Searchbar
@@ -102,7 +104,7 @@ export default ({f7router}) => {
             <div className="list item-list search-items">
                 <ul>
                     {itemList.map((item) =>
-                        <li key={item.id} className="row no-gap" style={{borderBottom: '1px solid #ccc', margin: 0, alignItems: 'normal'}}>
+                        <li key={item.id * Math.floor(Math.random() * 1000000)} className="row no-gap" style={{borderBottom: '1px solid #ccc', margin: 0, alignItems: 'normal',fontSize:'0.8rem'}}>
                             <a onClick={() => {
                                 f7router.navigate("/item_detail_popup/", {props: {itemProps: item}})
                                 setItemId(item.id)
