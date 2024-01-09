@@ -245,37 +245,43 @@ class ShopsController extends Controller
         return view('shop_items.shop_items_modal');
     }
 
-    public function ItemData($id)
+    public function ItemData($id): \Illuminate\Support\Collection
     {
-        return DB::select('SELECT shop_items.item_name,shop_items.shop_id,shop_items.unique_code, shop_items.id,
-       item_categories.item_category, item_categories.id category_id,item_types.item_type,item_types.id type_id,
-item_models.item_model,item_models.id model_id,item_suppliers.item_supplier,item_suppliers.id supplier_id,
-item_sizes.item_size,item_colors.item_color,item_sizes.id size_id,item_colors.id color_id,
-	(SELECT count(*) e FROM bill_items INNER JOIN
-	bills ON bill_items.bill_id = bills.id LEFT OUTER JOIN
-	item_codes ON bill_items.item_id = item_codes.id
-	WHERE item_codes.item_id = shop_items.unique_code and (bills.status = 1)) Sold
-	,((SELECT COUNT(*) FROM item_codes WHERE item_id = shop_items.unique_code) - (SELECT count(*) d FROM bill_items INNER JOIN
-	bills ON bill_items.bill_id = bills.id LEFT OUTER JOIN
-	item_codes ON bill_items.item_id = item_codes.id
-	WHERE item_codes.item_id = shop_items.unique_code and (bills.status = 1))) Remain,
-	(SELECT        COUNT(bills.id)
-FROM            bill_items INNER JOIN
-                         bills ON bill_items.bill_id = bills.id INNER JOIN
-                         item_codes ON bill_items.item_id = item_codes.id
-						 WHERE item_codes.item_id = shop_items.unique_code and bills.status = 0) Approve,
-	(SELECT item_price FROM item_prices WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) price,
-	(SELECT item_score FROM item_scores WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) score,
-	(SELECT item_credit FROM item_credits WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) credit,
-	(SELECT COUNT(*) FROM item_codes WHERE item_id = shop_items.unique_code) TotalItem
-FROM            shop_items LEFT OUTER JOIN
-                         item_categories ON shop_items.item_cat_id = item_categories.id LEFT OUTER JOIN
-						 item_types ON shop_items.item_type_id = item_types.id LEFT OUTER JOIN
-						 item_models ON shop_items.item_model_id = item_models.id LEFT OUTER JOIN
-						 item_suppliers ON shop_items.item_supplier_id = item_suppliers.id LEFT OUTER JOIN
-						 item_sizes ON shop_items.item_size_id = item_sizes.id LEFT OUTER JOIN
-						 item_colors ON shop_items.item_color_id = item_colors.id
-	WHERE (shop_items.shop_id = ?)', [$id]);
+        return DB::table('shop_items')
+            ->select(
+                'shop_items.item_name',
+                'shop_items.shop_id',
+                'shop_items.unique_code',
+                'shop_items.id',
+                'item_categories.item_category',
+                'item_categories.id as category_id',
+                'item_types.item_type',
+                'item_types.id as type_id',
+                'item_models.item_model',
+                'item_models.id as model_id',
+                'item_suppliers.item_supplier',
+                'item_suppliers.id as supplier_id',
+                'item_sizes.item_size',
+                'item_colors.item_color',
+                'item_sizes.id as size_id',
+                'item_colors.id as color_id',
+                DB::raw('(SELECT count(*) FROM bill_items INNER JOIN bills ON bill_items.bill_id = bills.id LEFT OUTER JOIN item_codes ON bill_items.item_id = item_codes.id WHERE item_codes.item_id = shop_items.unique_code and (bills.status = 1)) as Sold'),
+                DB::raw('((SELECT COUNT(*) FROM item_codes WHERE item_id = shop_items.unique_code) - (SELECT count(*) FROM bill_items INNER JOIN bills ON bill_items.bill_id = bills.id LEFT OUTER JOIN item_codes ON bill_items.item_id = item_codes.id WHERE item_codes.item_id = shop_items.unique_code and (bills.status = 1))) as Remain'),
+                DB::raw('(SELECT COUNT(bills.id) FROM bill_items INNER JOIN bills ON bill_items.bill_id = bills.id INNER JOIN item_codes ON bill_items.item_id = item_codes.id WHERE item_codes.item_id = shop_items.unique_code and bills.status = 0) as Approve'),
+                DB::raw('(SELECT item_price FROM item_prices WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as price'),
+                DB::raw('(SELECT item_score FROM item_scores WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as score'),
+                DB::raw('(SELECT item_credit FROM item_credits WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as credit'),
+                DB::raw('(SELECT COUNT(*) FROM item_codes WHERE item_id = shop_items.unique_code) as TotalItem')
+            )
+            ->leftJoin('item_categories', 'shop_items.item_cat_id', '=', 'item_categories.id')
+            ->leftJoin('item_types', 'shop_items.item_type_id', '=', 'item_types.id')
+            ->leftJoin('item_models', 'shop_items.item_model_id', '=', 'item_models.id')
+            ->leftJoin('item_suppliers', 'shop_items.item_supplier_id', '=', 'item_suppliers.id')
+            ->leftJoin('item_sizes', 'shop_items.item_size_id', '=', 'item_sizes.id')
+            ->leftJoin('item_colors', 'shop_items.item_color_id', '=', 'item_colors.id')
+            ->where('shop_items.shop_id', '=', $id)
+            ->get();
+
     }
     public function shopperItemData($id)
     {

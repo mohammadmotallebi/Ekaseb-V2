@@ -387,11 +387,11 @@ class UsersController extends Controller
 
         if ($v->fails()) {
             return json_encode($v->messages()->first());
-        } else {
-            return User::whereId(CurrentUserID())->update([
-                'identity_code' => arabicToEnglishNumber($request->get('identity_code')),
-            ]);
         }
+
+        return User::whereId(CurrentUserID())->update([
+            'identity_code' => arabicToEnglishNumber($request->get('identity_code')),
+        ]);
 
 
     }
@@ -407,9 +407,9 @@ class UsersController extends Controller
             ]);
             VerificationCode::where('valid_mobile', $mobile)->where('verification_code', $code)->delete();
             return 1;
-        } else {
-            return 0;
         }
+
+        return 0;
 
 
     }
@@ -434,13 +434,7 @@ class UsersController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
+    public function destroy(Request $request): string
     {
         $id = $request->id;
         User::find($id)->delete();
@@ -472,23 +466,9 @@ class UsersController extends Controller
         return User::all();
     }
 
-    public function getCard(Request $request)
-    {
-        $id = $request['id'];
-        $card = DB::table('card_to_user')
-            ->join('users', 'card_to_user.user_id', '=', 'users.identity_code')
-            ->join('cards', 'card_to_user.card_id', '=', 'cards.id')
-            ->select('cards.card_number as c')
-            ->where('users.identity_code', '=', $id)
-            ->get();
-        return $card[0]->C;
-
-    }
-
     public function usersQueryData($id)
     {
-        $cus = $this->usersRepositoryQueries->usersActivationQuery($id);
-        return $cus;
+        return $this->usersRepositoryQueries->usersActivationQuery($id);
     }
 
     public function userDetail($id)

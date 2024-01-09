@@ -1053,7 +1053,7 @@ WHERE        (shop_items.unique_code = ? AND buy_date IS NOT NULL)', [$id]);
 
     public function anyData()
     {
-        return $this->usersRepository->shopItemsQueryAdmin();
+//        return $this->usersRepository->shopItemsQueryAdmin();
     }
 
 

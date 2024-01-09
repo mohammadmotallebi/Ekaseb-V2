@@ -28,57 +28,49 @@ class LookUpRepository implements LookUpRepositoryInterface
     public function Genders()
     {
 
-        $gender = Gender::all()->where('status', '=', config('global.active'));
-        return $gender;
+        return Gender::all()->where('status', '=', config('global.active'));
 
     }
 
     public function RefUser()
     {
-        $refUser = User::all()->where('status', '=', config('global.active'));
-        return $refUser;
+        return User::all()->where('status', '=', config('global.active'));
 
     }
 
     public function Cities()
     {
-        $city = City::all()->where('status', '=', config('global.active'));
-        return $city;
+        return City::all()->where('status', '=', config('global.active'));
 
     }
 
     public function States($id = '')
     {
-        $state = State::all()->where('ostan', '=', $id);
-        return $state;
+        return State::all()->where('ostan', '=', $id);
 
     }
 
     public function Colors()
     {
-        $color = Color::all()->where('status', '=', config('global.active'));
-        return $color;
+        return Color::all()->where('status', '=', config('global.active'));
 
     }
 
     public function Jobs()
     {
-        $job = Job::all()->where('status', '=', config('global.active'));
-        return $job;
+        return Job::all()->where('status', '=', config('global.active'));
 
     }
 
     public function statuses()
     {
-        $status = Status::all();
-        return $status;
+        return Status::all();
 
     }
 
     public function itemCategories()
     {
-        $i = ItemCategory::all()->where('status', '=', config('global.active'));
-        return $i;
+        return ItemCategory::all()->where('status', '=', config('global.active'));
 
     }
 
