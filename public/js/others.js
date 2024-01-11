@@ -851,7 +851,7 @@ const viewitemcat = $.confirm({
     },
     onContentReady: function () {
         viewitemcat.$content.find('#itemCats').bootstrapTable('resetView');
-        $itemCatTable = viewitemcat.$content.find('#itemCats').bootstrapTable({
+        let $itemCatTable = viewitemcat.$content.find('#itemCats').bootstrapTable({
             url: '/get-ShopItemCategories-data',
         });
     }

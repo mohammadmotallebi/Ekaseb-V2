@@ -20,7 +20,7 @@
        data-toolbar="#itemCat_toolbar">
     <thead>
     <th data-checkbox="true"></th>
-    <th data-sortable="true" data-field="item_category_name">{{ __('lang.category') }}</th>
+    <th data-sortable="true" data-field="item_category">{{ __('lang.category') }}</th>
     <th data-width="10%" data-field="operate" data-formatter="operateFormatterItemCats"
         data-events="operateEvents" data-align="center" data-click-to-select="false"></th>
     </thead>

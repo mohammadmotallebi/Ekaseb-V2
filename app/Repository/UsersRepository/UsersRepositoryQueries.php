@@ -45,6 +45,18 @@ ORDER BY bills.buy_date DESC", [$id]);
             ->where('shop_items.shop_id', $sid)
             ->orderBy('bills.buy_date', 'DESC')
             ->get();
+        // convert to SQL query
+//         SELECT shop_items.id, shop_items.item_name, shop_items.shop_id, shop_items.item_cat_id, bills.status, item_categories.item_category, item_scores.item_score, item_scores.unique_code, item_scores.add_date, item_scores.start_date, item_scores.end_date, bills.buy_date
+//         FROM bill_items
+//         INNER JOIN bills ON bill_items.bill_id=bills.id
+//         LEFT OUTER JOIN item_categories ON item_categories.id=shop_items.item_cat_id
+//         LEFT OUTER JOIN shop_items ON shop_items.shop_id=shop_user.shop_id
+//         LEFT OUTER JOIN shop_user ON shop_items.shop_id=shop_user.shop_id
+//         LEFT OUTER JOIN item_codes ON shop_items.id=item_codes.item_id
+//         LEFT OUTER JOIN item_scores ON shop_items.id=item_scores.item_code
+//         WHERE (shop_user.user_id = 1) AND (shop_items.shop_id = 1)
+//         ORDER BY bills.buy_date DESC
+
     }
 
     //

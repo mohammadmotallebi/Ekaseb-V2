@@ -86,7 +86,7 @@
         "async": "^3.2.3",
         "babel-polyfill": "^6.26.0",
         "bootstrap": "^4.6.1",
-        "bootstrap-table": "^1.20.2",
+        "bootstrap-table": "^1.22.1",
         "browser-image-compression": "^2.0.0",
         "chart.js": "^3.8.2",
         "date-fns-jalali": "^2.29.2-0",
