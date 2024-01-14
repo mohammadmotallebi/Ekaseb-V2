@@ -849,8 +849,8 @@ class ShopItemsController extends Controller
         $items = DB::select('SELECT item_codes.item_code, item_codes.qrcode, bills.bill_number, bills.buy_date, bills.status, bills.user_id
                          FROM            bill_items RIGHT OUTER JOIN
                          bills ON bill_items.bill_id = bills.id RIGHT OUTER JOIN
-                         item_codes ON bill_items.item_id = item_codes.id LEFT OUTER JOIN
-                         shop_items ON item_codes.item_id = shop_items.unique_code
+                         item_codes ON bill_items.item_code_id = item_codes.id LEFT OUTER JOIN
+                         shop_items ON item_codes.unique_code = shop_items.unique_code
                          WHERE shop_items.unique_code = ?', [$id]);
 
         foreach ($items as $item) {
@@ -876,7 +876,7 @@ FROM            bill_items INNER JOIN
                          item_scores ON bill_items.item_score_id = item_scores.id RIGHT OUTER JOIN
                          item_suppliers RIGHT OUTER JOIN
                          shop_items ON item_suppliers.id = shop_items.item_supplier_id RIGHT OUTER JOIN
-                         item_codes ON shop_items.unique_code = item_codes.item_id ON bill_items.item_id = item_codes.id LEFT OUTER JOIN
+                         item_codes ON shop_items.unique_code = item_codes.unique_code ON bill_items.item_code_id = item_codes.id LEFT OUTER JOIN
                          item_credits ON bill_items.item_credit_id = item_credits.id LEFT OUTER JOIN
                          item_prices ON bill_items.item_price_id = item_prices.id
 WHERE        (shop_items.unique_code = ? AND buy_date IS NOT NULL)', [$id]);
@@ -1062,14 +1062,14 @@ WHERE        (shop_items.unique_code = ? AND buy_date IS NOT NULL)', [$id]);
         $res = array();
         $sql = DB::select('SELECT  bill_items.id,bills.buy_date,item_codes.item_code,item_prices.item_price price
 FROM            shop_items RIGHT OUTER JOIN
-                         item_codes ON shop_items.unique_code = item_codes.item_id LEFT OUTER JOIN
+                         item_codes ON shop_items.unique_code = item_codes.unique_code LEFT OUTER JOIN
                          bill_items INNER JOIN
                          bills ON bill_items.bill_id = bills.id INNER JOIN
                          shops ON bills.shop_id = shops.id LEFT OUTER JOIN
                          item_credits ON bill_items.item_credit_id = item_credits.id LEFT OUTER JOIN
                          item_scores ON bill_items.item_score_id = item_scores.id LEFT OUTER JOIN
-                         item_prices ON bill_items.item_price_id = item_prices.id ON item_codes.id = bill_items.item_id
-						    where item_codes.item_id = ?
+                         item_prices ON bill_items.item_price_id = item_prices.id ON item_codes.id = bill_items.item_code_id
+						    where item_codes.unique_code = ?
 						    ORDER BY bills.buy_date desc', [$id]);
 
         foreach ($sql as $s) {

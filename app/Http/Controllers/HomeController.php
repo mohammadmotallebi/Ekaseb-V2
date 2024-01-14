@@ -84,14 +84,14 @@ class HomeController extends Controller
                     DB::raw('SUM(CAST(item_scores.item_score AS FLOAT)) AS score'),
                     DB::raw('SUM(CAST(item_credits.item_credit AS FLOAT)) AS credit')
                 ])
-                ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.item_id')
+                ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.unique_code')
                 ->rightJoin('bill_items', function ($join) {
                     $join->join('bills', 'bill_items.bill_id', '=', 'bills.id')
                         ->join('shops', 'bills.shop_id', '=', 'shops.id')
                         ->leftJoin('item_credits', 'bill_items.item_credit_id', '=', 'item_credits.id')
                         ->leftJoin('item_scores', 'bill_items.item_score_id', '=', 'item_scores.id')
                         ->leftJoin('item_prices', 'bill_items.item_price_id', '=', 'item_prices.id')
-                        ->on('item_codes.id', '=', 'bill_items.item_id');
+                        ->on('item_codes.id', '=', 'bill_items.item_code_id');
                 })
                 ->where('bills.user_id', '=', $id)
                 ->whereRaw('SUBSTRING(bills.buy_date, 1, 4) = ?', [date('Y')])
@@ -117,14 +117,14 @@ class HomeController extends Controller
                     DB::raw('SUM(CAST(item_scores.item_score AS SIGNED)) as score'),
                     DB::raw('SUM(CAST(item_credits.item_credit AS SIGNED)) as credit')
                 ])
-                ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.item_id')
+                ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.unique_code')
                 ->rightJoin('bill_items', function ($join) {
                     $join->on('bill_items.bill_id', '=', 'bills.id')
                         ->join('shops', 'bills.shop_id', '=', 'shops.id')
                         ->leftJoin('item_credits', 'bill_items.item_credit_id', '=', 'item_credits.id')
                         ->leftJoin('item_scores', 'bill_items.item_score_id', '=', 'item_scores.id')
                         ->leftJoin('item_prices', 'bill_items.item_price_id', '=', 'item_prices.id')
-                        ->on('item_codes.id', '=', 'bill_items.item_id');
+                        ->on('item_codes.id', '=', 'bill_items.item_code_id');
                 })
                 ->where('user_id', $id)
                 ->groupBy('bills.user_id', DB::raw('SUBSTRING(bills.buy_date, 1, 4)'))
@@ -213,14 +213,14 @@ class HomeController extends Controller
         SUM(CAST(item_scores.item_score AS SIGNED)) AS score, 
         SUM(CAST(item_credits.item_credit AS SIGNED)) AS credit, 
         SUM(CAST(item_prices.item_price AS SIGNED)) AS total')
-            ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.item_id')
+            ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.unique_code')
             ->rightJoin('bill_items', function ($join) {
                 $join->join('bills', 'bill_items.bill_id', '=', 'bills.id')
                     ->join('shops', 'bills.shop_id', '=', 'shops.id')
                     ->leftJoin('item_credits', 'bill_items.item_credit_id', '=', 'item_credits.id')
                     ->leftJoin('item_scores', 'bill_items.item_score_id', '=', 'item_scores.id')
                     ->leftJoin('item_prices', 'bill_items.item_price_id', '=', 'item_prices.id')
-                    ->on('item_codes.id', '=', 'bill_items.item_id');
+                    ->on('item_codes.id', '=', 'bill_items.item_code_id');
             })
             ->where('bills.user_id', $id)
             ->whereRaw('SUBSTRING(bills.buy_date, 1, 4) = ?', [jdate('Y')])
@@ -248,7 +248,7 @@ class HomeController extends Controller
                 DB::raw('SUM(CAST(item_credits.item_credit AS UNSIGNED)) as credit'),
                 DB::raw('SUM(CAST(item_prices.item_price AS UNSIGNED)) as total'),
             ])
-            ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.item_id')
+            ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.unique_code')
             ->rightJoin('bill_items', function ($join) use ($id) {
                 $join->on('bill_items.bill_id', '=', 'bills.id')
                     ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
@@ -256,7 +256,7 @@ class HomeController extends Controller
                     ->leftJoin('item_credits', 'bill_items.item_credit_id', '=', 'item_credits.id')
                     ->leftJoin('item_scores', 'bill_items.item_score_id', '=', 'item_scores.id')
                     ->leftJoin('item_prices', 'bill_items.item_price_id', '=', 'item_prices.id')
-                    ->on('item_codes.id', '=', 'bill_items.item_id')
+                    ->on('item_codes.id', '=', 'bill_items.item_code_id')
                     ->where('bills.user_id', '=', $id)
                     ->where('bills.status', '=', 1);
             })
@@ -299,7 +299,7 @@ class HomeController extends Controller
                     ->leftJoin('item_credits', 'shop_items.unique_code', '=', 'item_credits.unique_code')
                     ->leftJoin('item_scores', 'shop_items.unique_code', '=', 'item_scores.unique_code')
                     ->leftJoin('item_prices', 'shop_items.unique_code', '=', 'item_prices.unique_code')
-                    ->leftJoin('item_codes', 'shop_items.unique_code', '=', 'item_codes.item_id')
+                    ->leftJoin('item_codes', 'shop_items.unique_code', '=', 'item_codes.unique_code')
                     ->leftJoin('item_sizes', 'shop_items.item_size_id', '=', 'item_sizes.id')
                     ->select(DB::raw('shop_items.item_name, item_prices.item_price, item_models.item_model,
                      item_colors.item_color, item_sizes.item_size, item_credits.item_credit, item_scores.item_score,

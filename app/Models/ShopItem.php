@@ -17,7 +17,7 @@ class ShopItem extends Model
 
     public function codes(): HasMany
     {
-        return $this->hasMany(ItemCode::class);
+        return $this->hasMany(ItemCode::class, 'unique_code', 'unique_code');
     }
 
     public function scopeWhereUc($query,$uc)
