@@ -54,7 +54,7 @@ class ShopsController extends Controller
     public function create()
     {
         $estates = Estate::all();
-        return view('shops.create', ['estates' => $estates ]);
+        return view('shops.create', ['estates' => $estates]);
     }
 
     public function store(Request $request)
@@ -169,19 +169,18 @@ class ShopsController extends Controller
                 'shop_items.item_name',
                 'bills.id',
                 'shop_items.shop_id',
-                'item_prices.item_price as price',
                 'item_codes.item_code',
                 'bills.buy_date',
                 'bills.user_id as customer',
-                DB::raw('(select user_id from shop_user where shop_id = shop_items.shop_id) as shopper')
+                DB::raw('(select user_id from shop_user where shop_id = shop_items.shop_id) as shopper'),
+                DB::raw('(SELECT item_price FROM item_prices WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as price'),
+                DB::raw('(SELECT item_score FROM item_scores WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as score'),
+                DB::raw('(SELECT item_credit FROM item_credits WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as credit'),
             )
             ->join('item_codes', 'shop_items.unique_code', '=', 'item_codes.unique_code')
             ->rightJoin('bill_items', function ($join) {
                 $join->join('bills', 'bill_items.bill_id', '=', 'bills.id')
                     ->join('shops', 'bills.shop_id', '=', 'shops.id')
-                    ->leftJoin('item_credits', 'bill_items.item_credit_id', '=', 'item_credits.id')
-                    ->leftJoin('item_scores', 'bill_items.item_score_id', '=', 'item_scores.id')
-                    ->leftJoin('item_prices', 'bill_items.item_price_id', '=', 'item_prices.id')
                     ->on('item_codes.id', '=', 'bill_items.item_code_id');
             })
             ->whereRaw('(select user_id from shop_user where shop_id = shop_items.shop_id) = ? and bills.status = ?', [CurrentUserID(), 0])
@@ -209,7 +208,7 @@ class ShopsController extends Controller
         return $sql[0]->bills;
     }
 
-    public function approveBill(): int
+    public function approveBill(): string
     {
         $update = Bill::find(request('id'))->update(['status' => 1]);
         if ($update === 1) {
@@ -283,6 +282,7 @@ class ShopsController extends Controller
             ->get();
 
     }
+
     public function shopperItemData($id)
     {
 
@@ -305,7 +305,7 @@ FROM shop_items
                       LEFT OUTER JOIN item_scores ON bill_items.item_score_id=item_scores.id
                       LEFT OUTER JOIN item_prices ON bill_items.item_price_id=item_prices.id ON item_codes.id=bill_items.item_code_id
 					  WHERE        (bills.shop_id in (?))
-GROUP BY bills.shop_id',[(int) implode(',',$shops)]);
+GROUP BY bills.shop_id', [(int)implode(',', $shops)]);
         $shopperCredit = User::find(CurrentUserID())->credits()->sum('credit');
 
         foreach ($details as $detail) {
@@ -351,7 +351,7 @@ GROUP BY bills.shop_id',[(int) implode(',',$shops)]);
                 DB::raw('(SELECT item_price FROM item_prices WHERE unique_code = shop_items.unique_code ORDER BY add_date DESC limit 1) as price'),
                 DB::raw('(SELECT COUNT(*) FROM item_codes WHERE unique_code = shop_items.unique_code) as TotalItem')
             )
-            ->where(DB::raw('(SELECT count(*) FROM bill_items INNER JOIN bills ON bill_items.bill_id = bills.id LEFT OUTER JOIN item_codes ON bill_items.item_code_id = item_codes.id WHERE item_codes.unique_code = shop_items.unique_code and (bills.status = 1))'),'>',0)
+            ->where(DB::raw('(SELECT count(*) FROM bill_items INNER JOIN bills ON bill_items.bill_id = bills.id LEFT OUTER JOIN item_codes ON bill_items.item_code_id = item_codes.id WHERE item_codes.unique_code = shop_items.unique_code and (bills.status = 1))'), '>', 0)
             ->where('shop_items.shop_id', '=', $id)
             ->get();
         return $sql;
