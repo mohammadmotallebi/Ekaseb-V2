@@ -227,23 +227,24 @@ class ShopsController extends Controller
         return 'error';
     }
 
+    // Get Favorite Shops
     public function anyFavData($fav = 0)
     {
-        if ($fav == 0) {
+        if ($fav === 0) {
             $shops = User::find(CurrentUserID())->favShops()->get();
-        } else {
-            if ($shops = User::find(CurrentUserID())->favShops()->whereId($fav)->get()) {
-                $shops = Shop::whereId($fav)->get();
-            }
+        } else if ($shops = User::find(CurrentUserID())->favShops()->whereId($fav)->get()) {
+            $shops = Shop::whereId($fav)->get();
         }
         return $shops;
     }
 
+    // Get Shop Items
     public function Items()
     {
         return view('shop_items.shop_items_modal');
     }
 
+    // Get Shop Items With Shop ID
     public function ItemData($id): \Illuminate\Support\Collection
     {
         return DB::table('shop_items')
@@ -283,6 +284,7 @@ class ShopsController extends Controller
 
     }
 
+    // Get Shop Items With Shop ID From shop_items Table
     public function shopperItemData($id)
     {
 
@@ -291,6 +293,7 @@ class ShopsController extends Controller
     }
 
 
+    // Get Shoppers Home Report Filter by User ID
     public function getShopperHome(): array
     {
         $c = 0;
@@ -335,8 +338,8 @@ GROUP BY bills.shop_id', [(int)implode(',', $shops)]);
         return ['RemainCredit' => ($shopperCredit - $c) ?? 0, 'status' => $status ?? 0, 'Details' => $details[0] ?? '', 'totalSell' => number_format($sells[0]->sell) ?? 0];
     }
 
-    // Get Shopper Sells List
-    public function getSellsList($id)
+    // Get Shopper Sells List by Shop ID
+    public function getSellsList($id): \Illuminate\Support\Collection
     {
         // Generate a SQL Query for get Shopper Sells List ( Get Count Sells, Remain Items, Item Name, Item Unique code, Bill Status)
         $sql = DB::table('shop_items')
