@@ -638,13 +638,13 @@ class ShopItemsController extends Controller
         $images = $request->get('images');
         $dbImages = ItemImage::where('unique_code', $uc)->get()->count();
         $name = ShopItem::whereUc($uc)->first()->item_name;
-        $c = ItemCode::where('item_id', $uc)->get(['item_code', 'id']);
-        $bill = BillItem::whereIn('item_id', $c->pluck('id')->toArray())->first()->item_id ?? 0;
-        $codes = ItemCode::where('item_id', $uc)->get()->except($bill)->pluck('item_code');
+        $c = ItemCode::where('unique_code', $uc)->get(['item_code', 'id']);
+        $bill = BillItem::whereIn('item_code_id', $c->pluck('id')->toArray())->first()->item_id ?? 0;
+        $codes = ItemCode::where('unique_code', $uc)->get()->except($bill)->pluck('item_code');
         $prices = ItemPrice::whereIn('item_code', $c->pluck('item_code')->toArray())->get();
         $credits = ItemCredit::whereIn('item_code', $c->pluck('item_code')->toArray())->get();
         $scores = ItemScore::whereIn('item_code', $c->pluck('item_code')->toArray())->get();
-        $first_count = ItemCode::where('item_id', $uc)->get()->except($bill)->count();
+        $first_count = ItemCode::where('unique_code', $uc)->get()->except($bill)->count();
         $shop = Shop::find($request->shop);
         $i = 1;
         if ($request->get('name') !== $name) {
@@ -668,7 +668,7 @@ class ShopItemsController extends Controller
             while ($i <= $count) {
                 $item_code = $shop->shop_unique_id . '' . randomCode(setting()->number_of_item_code_digit - setting()->number_of_shop_unique_code_digit);
                 if (ItemCode::create([
-                    'item_id' => $uc,
+                    'unique_code' => $uc,
                     'item_code' => $item_code,
                 ])) {
                     if (ItemPrice::create([
@@ -759,21 +759,23 @@ class ShopItemsController extends Controller
 
     public function editMobile(Request $request)
     {
+
         try {
             $activeOff = [];
             $uc = $request->get('unique_code');
             $images = ItemImage::where('unique_code', $uc)->get()->pluck('image_url')->toArray();
-            $c = ItemCode::where('item_id', $uc)->get()->pluck('id')->toArray();
-            $bill = BillItem::whereIn('item_id', $c)->first()->item_id ?? 0;
-            $codes = ItemCode::where('item_id', $uc)->get()->except($bill)->pluck('item_code');
+            $c = ItemCode::where('unique_code', $uc)->get()->pluck('id')->toArray();
+            $bill = BillItem::whereIn('item_code_id', $c)->first()->item_id ?? 0;
+            $codes = ItemCode::where('unique_code', $uc)->get()->except($bill)->pluck('item_code');
             $offs = ItemOff::where('unique_code', $uc)->get();
-            $shopId = ShopItem::whereUc($uc)->first()->shop_id;
+            $shopId = ShopItem::where('unique_code', $uc)->first()->shop_id;
             if (count($offs) > 0) {
-                $activeOff = ItemOff::where('unique_code', $uc)->where('status','=',1)->get();
+                $activeOff = ItemOff::where('unique_code', $uc)->where('status', '=', 1)->get();
             } else {
                 $activeOff = [['off_percent' => 0, 'off_price' => 0, 'start_date' => fullDate(), 'end_date' => fullDate(), 'status' => 0]];
             }
             $loaded = true;
+
         } catch (\Exception $e) {
             $loaded = false;
         }
