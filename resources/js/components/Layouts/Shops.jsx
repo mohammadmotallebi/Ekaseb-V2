@@ -34,7 +34,7 @@ export default function Shops(props) {
         f7.store.dispatch("setJsonProps", {});
         setMenu(f7.views.main.router.currentRoute.name);
         f7.$(".back").click(function (e) {
-            if (self.state.menu == "shops") {
+            if (self.state.menu === "shops") {
 
                 props.router.back(f7.params.home + "/home", {force: true});
             } else {
@@ -80,7 +80,7 @@ export default function Shops(props) {
                         href={"#"}
                         onClick={() => {
                             setShopDetail({...shop});
-                            f7.popup.open(".shop-details", true);
+                            f7.popup.open('.shop-details', true);
                         }}
                     >
                         <div slot="media" className={"item-after"}>

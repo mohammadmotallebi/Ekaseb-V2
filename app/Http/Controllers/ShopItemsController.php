@@ -817,7 +817,7 @@ class ShopItemsController extends Controller
                     if ($items->id > 0) {
                         for ($j = 0; $j < $count; $j++) {
                             $code = new ItemCode([
-                                'item_id' => $items->id,
+                                'item_code_id' => $items->id,
                                 'item_code' => $shop->shop_unique_id . '' . randomCode(setting()->number_of_item_code_digit - setting()->number_of_shop_unique_code_digit),
                             ]);
                             $code->save();
