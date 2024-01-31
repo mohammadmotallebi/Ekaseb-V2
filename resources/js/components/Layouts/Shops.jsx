@@ -79,8 +79,13 @@ export default function Shops(props) {
                         title={shop.shop_name}
                         href={"#"}
                         onClick={() => {
-                            setShopDetail({...shop});
-                            f7.popup.open('.shop-details', true);
+                            setShopDetail(shop);
+                            f7.popup.create({
+                                el: ".shop-details",
+                                swipeToClose: true,
+                                animate: true
+                            }).open();
+                            console.log(shopDetail)
                         }}
                     >
                         <div slot="media" className={"item-after"}>
@@ -96,7 +101,7 @@ export default function Shops(props) {
                     </ListItem>
                 ))}
             </List>
-            <ShopDetails data={0.58}/>
+            <ShopDetails data={shopDetail}/>
         </Page>
     );
 }

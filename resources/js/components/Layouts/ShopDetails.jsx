@@ -17,7 +17,7 @@ import fa from "../lang/fa";
 import '../../style.css';
 import ItemDetailPopup from "../Popups/ItemDetailPopup";
 import {request, getDevice} from "framework7";
-
+import BeatLoader from "react-spinners/BeatLoader";
 const dv = getDevice()
 import {number, postData} from '../Helper';
 
@@ -25,27 +25,21 @@ import {number, postData} from '../Helper';
 export default function ShopDetails(props) {
 
     const favShop = useStore('getFavShop');
-    const [sd, setSd] = useState();
-    const loadItems = () => {
-        request.json(f7.params.home + 'Shops/get-shopItems-data/' + props.data.id, function (fetchData) {
-            f7.store.dispatch('setFavShop', props.data.id);
-            setSd(
-                fetchData.map((item) =>
-                    <ListItem href={item.id} key={item.id} title={item.item_name}
-                              onClick={f7.store.dispatch('setItemDetail', item)}
-                              popupOpen=".item_detail">
-                        <div slot="after">{number(item.price)}</div>
-                        <div slot="after-title"
-                             className='text-primary mr-1'> ({item.Remain})
-                        </div>
-                    </ListItem>
-                )
-            )
+    const [sd, setSd] = useState([]);
 
-        })
+    // Load Shop Items and Push to State
+    const loadItems = async () => {
+        console.log(props.data)
+        await fetch(f7.params.home + 'Shops/get-shopItems-data/' + props.data.id)
+            .then((response) => response.json())
+            .then((data) => {
+                f7.store.dispatch('setFavShop', props.data.id);
+                setSd(data);
+            });
     }
 
 
+    // Add Shop to Fav For Customers
     const addToFav = () => {
         if (favShop > 0) {
             request.post(f7.params.home + 'Shop/delete-from-fav', {'id': props.data.id}, function () {
@@ -110,8 +104,8 @@ export default function ShopDetails(props) {
                         </div>
                     </ListItem>
                     <ListItem title={fa.website} medialist>
-                        <div className={'item-after text-align-right'}>{(props.data.website) ?
-                            <Link href={'http://' + props.data.website} external
+                        <div className={'item-after text-align-right'}>{(props.data.website || props.data.website === '0') ?
+                            <Link href={'https://' + props.data.website} external
                                   target={'_blank'}>{props.data.website}</Link> : '---'}</div>
                     </ListItem>
                     <ListItem title={fa.manager} medialist>
@@ -123,16 +117,29 @@ export default function ShopDetails(props) {
                     <Searchbar
                         searchContainer=".search-items"
                         searchIn=".item-title"
-                        disableButton={!dv.desktop}
-                        disableButton={!dv.ios}
+                        disableButton={!dv.desktop || !dv.ios}
                         placeholder={fa.search}
                         backdrop={false}
                         spellcheck={true}
                         style={{position: 'sticky', top: '0'}}
                     ></Searchbar>
 
-                    <List mediaList className={'search-items'}>
-                        {sd}
+                    <List mediaList className={'search-items'} dividersIos outlineIos strongIos>
+                        <div className="text-align-center"><BeatLoader color="var(--f7-theme-color)" loading={sd.length < 1}/></div>
+                            {sd?.map((item) =>
+                            <ListItem href={item.id} title={item.item_name} key={item.id * Math.floor(Math.random() * 1000000)}
+                                      onClick={()=> {
+                                            f7.popup.create({
+                                                el: ".item-detail",
+                                                swipeToClose: true
+                                            }).open();
+                                      }}
+                                     >
+                                <div slot="after">{number(item.price)}</div>
+                                <div slot="after-title"
+                                     className='text-primary mr-1'> ({item.Remain})
+                                </div>
+                            </ListItem>)}
                     </List>
                 </Block>
                 <ItemDetailPopup/>

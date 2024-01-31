@@ -34,7 +34,7 @@
     @endhandheld
 
     @if (mobileApp())
-        <link rel="stylesheet" href="{{ mix('finally/css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('finally/css/app.css') }}">
     @endif
     @unless(mobileApp())
         <link href="{{ asset('finally/css/all.css') }}" rel="stylesheet">

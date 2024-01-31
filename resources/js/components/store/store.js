@@ -308,8 +308,9 @@ const store = createStore({
             );
         },
         setItemDetail({ state, dispatch }, data) {
+            console.log(data)
             request({
-                url: f7.params.home + "Shops/get-shopItems-data/" + data,
+                url: f7.params.home + "Shops/get-shopItems-data/" + data.id,
                 dataType: "json",
                 beforeCreate(xhr, pa) {
                     dispatch("setLoading", true);

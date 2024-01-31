@@ -1,5 +1,5 @@
 @if (mobileApp())
-    <script src="{{ mix('finally/js/app.js') }}"></script>
+    <script src="{{ asset('finally/js/app.js') }}"></script>
 @endif
 
 @unless(mobileApp())
