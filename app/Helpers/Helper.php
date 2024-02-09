@@ -5,6 +5,7 @@ use App\Models\User;
 use Milon\Barcode\DNS2D;
 use Milon\Barcode\Facades\DNS2DFacade;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * description
@@ -560,43 +561,48 @@ function datediff($startDate, $endDate)
 
 function usersList($roles = [])
 {
-    if (count($roles) == 0) {
+    if (count($roles) === 0) {
         return \App\Models\User::where('active', 1)->where('name', '<>', '')->where('family', '<>', '')->get();
-    } else {
-        $arr = array();
-        $users = \App\Models\User::where('active', 1)->where('name', '<>', '')->where('family', '<>', '')->get();
-        foreach ($users as $user) {
-            foreach ($roles as $role) {
-                if (userRole($user->id)?->name == $role) {
-                    $user->role = userRole($user->id)->name;
-                    array_push($arr, $user);
-                }
+    }
+
+    $arr = array();
+    $users = \App\Models\User::where('active', 1)->where('name', '<>', '')->where('family', '<>', '')->get();
+    foreach ($users as $user) {
+        foreach ($roles as $role) {
+            if (userRole($user->id)?->name === $role) {
+                $user->role = userRole($user->id)->name;
+                $arr[] = $user;
             }
         }
-        return $arr;
     }
+    return $arr;
 }
 function contractUsersList($roles = [])
 {
-    if (count($roles) == 0) {
-        return \App\Models\ContractUser::where('active', 1)->where('name', '<>', '')->where('family', '<>', '')->get();
-    } else {
-        $arr = array();
-        $users = \App\Models\ContractUser::where('active', 1)->where('name', '<>', '')->where('family', '<>', '')->get();
-        foreach ($users as $user) {
-            foreach ($roles as $role) {
-                if (userRole($user->id)->name == $role) {
-                    $user->role = userRole($user->id)->name;
-                    array_push($arr, $user);
-                }
+    if (count($roles) === 0) {
+        return \App\Models\ContractUser::where('name', '<>', '')->where('family', '<>', '')->get();
+    }
+
+    $arr = array();
+    $users = \App\Models\ContractUser::where('name', '<>', '')->where('family', '<>', '')->get();
+    foreach ($users as $user) {
+        foreach ($roles as $role) {
+            if (contractUserRole($user->id)->name === $role) {
+                $user->role = contractUserRole($user->id)->name;
+                $arr[] = $user;
             }
         }
-        return $arr;
     }
+    return $arr;
 }
 function userRole($id)
 {
     return \App\Models\User::find($id)->roles()->first(['name', 'label']);
+}
+
+function contractUserRole($id)
+{
+    return \App\Models\ContractUser::find($id)->roles()->first(['name', 'label']);
 }
 
 function floorsList()
@@ -606,11 +612,11 @@ function floorsList()
 function userContracts($userId)
 {
     $arr = array();
-    $contracts = \App\Models\User::find($userId)->contracts()->where('active', 1)->get(['id', 'estate_id']);
+    $contracts = \App\Models\User::find($userId)->contracts()->get(['id', 'estate_id']);
     foreach ($contracts as $contract) {
         $contract->text = 'شماره واحد : ' . $contract->estate_id;
         unset($contract->estate_id);
-        array_push($arr, $contract);
+        $arr[] = $contract;
     }
     return $arr;
 }
@@ -618,11 +624,11 @@ function userContracts($userId)
 function userContractsEditForm($userId)
 {
     $arr = array();
-    $contracts = \App\Models\User::find($userId)->contracts()->where('active', 1)->get(['id', 'estate_id']);
+    $contracts = \App\Models\ContractUser::find($userId)->contracts()->get(['id', 'estate_id']);
     foreach ($contracts as $contract) {
         $contract->text = 'شماره واحد : ' . $contract->estate_id;
         unset($contract->estate_id);
-        array_push($arr, $contract);
+        $arr[] = $contract;
     }
     return $arr;
 }
@@ -634,7 +640,7 @@ function getFloorName($id)
 
 function getEstateDetails($id)
 {
-    return \App\Models\EstateDetail::where('estate_id', $id)->where('active', 1)->first();
+    return \App\Models\EstateDetail::where('estate_id', $id)->first();
 }
 
 function banks()
@@ -649,11 +655,11 @@ function bankName($id)
 
 function paymentReasons($f = null)
 {
-    if ($f == null) {
+    if ($f === null) {
         return \App\Models\PaymentReason::get();
-    } else {
-        return \App\Models\PaymentReason::where('for_contract', $f)->get();
     }
+
+    return \App\Models\PaymentReason::where('for_contract', $f)->get();
 }
 
 function costTypes()

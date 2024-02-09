@@ -22,12 +22,13 @@ class Permission
 
         $user = Auth::user();
 
-        if ($user->is_admin == 1)
+        if ($user->is_admin === 1)
             return $next($request);
 
             // Check if user has the role This check will depend on how your roles are set up
-            if (hasPermissions($permissions))
+            if (hasPermissions($permissions)) {
                 return $next($request);
+            }
 
 
 

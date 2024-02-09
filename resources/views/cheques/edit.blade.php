@@ -1,24 +1,25 @@
 <form method="post" id="chequeEditForm" class="was-validated" autocomplete="off">
-    @if(previous_route() == 'payments')
+    @if(previous_route() === 'payments')
         <div class="form-group row">
             <label for="user_id" class="col-2 col-form-label">{{ __('lang.user') }}</label>
             <div class="col-8">
                 <select id="user_id" name="user_id" class="custom-select" required>
                     <option></option>
-                    @foreach(usersList(['owner','renter']) as $x)
-                        <option @if($cheque->user_id == $x->id) selected="selected"
+
+                    @foreach(contractUsersList() as $x)
+                        <option @if($cheque->user_id === $x->id) selected="selected"
                                 @endif  value="{{$x->id}}">{{$x->name . ' ' . $x->family .' ('. $x->identity_code .')'}}</option>
                     @endforeach
                 </select>
             </div>
         </div>
-        <div class="form-group row" id="contracts-div" @if($cheque->contract_id == null) style="display:none" @endif >
+        <div class="form-group row" id="contracts-div" @if($cheque->contract_id === null) style="display:none" @endif >
             <label for="contract_id" class="col-2 col-form-label">{{ __('lang.contracts') }}</label>
             <div class="col-8">
                 <select id="contract_id" name="contract_id" class="custom-select">
                     <option></option>
                     @foreach(userContractsEditForm($cheque->user_id) as $x)
-                        <option @if($cheque->contract_id == $x->id) selected="selected"
+                        <option @if($cheque->contract_id === $x->id) selected="selected"
                                 @endif  value="{{ $x->id }}">{{ $x->text }}</option>
                     @endforeach
                 </select>
@@ -51,10 +52,10 @@
         <div class="col-8">
             <select id="bank" name="bank" class="custom-select" required>
                 <option></option>
-                @forelse(banks() as $x)
-                    <option @if($cheque->bank == $x->id) selected="selected"
+                @foreach(banks() as $x)
+                    <option @if($cheque->bank === $x->id) selected="selected"
                             @endif value="{{$x->id}}">{{$x->bank_name}}</option>
-                    @endforeach
+                @endforeach
             </select>
         </div>
     </div>
@@ -84,10 +85,10 @@
         <div class="col-8">
             <select id="payment_reason_id" name="payment_reason_id" class="custom-select" required>
                 <option></option>
-                @forelse(paymentReasons((previous_route() === 'estates') ? '1' : '0') as $x)
-                    <option @if($cheque->payment_reason_id == $x->id) selected="selected"
+                @foreach(paymentReasons((previous_route() === 'estates') ? '1' : '0') as $x)
+                    <option @if($cheque->payment_reason_id === $x->id) selected="selected"
                             @endif value="{{$x->id}}">{{$x->reason}}</option>
-                    @endforeach
+                @endforeach
             </select>
         </div>
     </div>

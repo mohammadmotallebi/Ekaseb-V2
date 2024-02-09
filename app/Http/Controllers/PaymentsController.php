@@ -46,8 +46,10 @@ class PaymentsController extends Controller
         $res = array();
         $reasons = PaymentReason::where('for_contract', 0)->pluck('id')->all();
         $payments = Payment::whereIn('payment_reason_id', $reasons)->get();
+//        dd(ContractUser::whereId(2309)->first());
         foreach ($payments as $payment) {
-            $payment->username = ContractUser::find($payment->user_id)->name . ' ' . ContractUser::find($payment->user_id)->family;
+            $user = ContractUser::whereId($payment->user_id)->first();
+            $payment->username = $user->name . ' ' . $user->family;
             if ($payment->payment_method == 'cheque') {
                 $payment->payment_method_farsi = 'چک';
             } else if ($payment->payment_method == 'cash') {

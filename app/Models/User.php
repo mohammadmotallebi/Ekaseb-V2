@@ -60,10 +60,7 @@ class User extends Authenticate
         return $this->belongsToMany(Estate::class);
     }
 
-    public function contracts(): HasMany
-    {
-        return $this->hasMany(Contract::class, 'renter_id', 'id');
-    }
+
 
     public function hasRole($role): bool
     {

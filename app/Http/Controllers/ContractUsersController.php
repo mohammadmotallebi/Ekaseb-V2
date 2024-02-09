@@ -17,7 +17,6 @@ class ContractUsersController extends Controller
 
     public function anyData()
     {
-
         return ContractUser::all();
     }
 

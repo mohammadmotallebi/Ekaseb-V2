@@ -17,7 +17,7 @@ class ChequesController extends Controller
         $rules = [
             'user_id' => 'required',
             'payment_date' => 'required',
-            'cheque_number' => 'required|unique:App\Models\Payment,cheque_number',
+            'cheque_number' => 'required|unique:App\Models\Payment,cheque_number'.(\request('id') ? ','.\request('id') : ''),
             'cheque_date' => 'required',
             'bank' => 'required',
             'bank_branch' => 'required',
@@ -44,7 +44,7 @@ class ChequesController extends Controller
     {
         $rules = [
             'cost_date' => 'required',
-            'cheque_number' => 'required|unique:App\Models\Cost,cheque_number',
+            'cheque_number' => 'required|unique:App\Models\Cost,cheque_number'.(\request('id') ? ','.\request('id') : ''),
             'cheque_date' => 'required',
             'bank' => 'required',
             'bank_branch' => 'required',
@@ -109,6 +109,7 @@ class ChequesController extends Controller
         $this->validation();
         try {
             Payment::whereId(\request('id'))->update([
+                'user_id' => \request('user_id'),
                 'payment_date' => \request('payment_date'),
                 'cheque_number' => \request('cheque_number'),
                 'fee' => str_replace(',', '', \request('fee')),

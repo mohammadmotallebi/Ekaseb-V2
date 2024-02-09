@@ -100,7 +100,7 @@ Route::get('fav-shop-check/{id}', function ($id) {
         return 0;
     }
 });
-Route::controller(\ContractUsersController::class)->prefix('contract-users')->group(function () {
+Route::controller(ContractUsersController::class)->prefix('contract-users')->group(function () {
     Route::get('/list', 'getIndex')->name('contractUserList');
     Route::get('/data', 'anyData')->name('contract_users');
     Route::get('/create', 'create');
