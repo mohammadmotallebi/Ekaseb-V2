@@ -12260,7 +12260,7 @@ shopsRender = () => {
         }
         $.confirm({
             title: fa.edit,
-            content: "url: ShopItems/edit-multi",
+            content: "url: ShopItems/edit-multi/" + rowID,
             columnClass: "xl",
             theme: "modern",
             type: "purple",

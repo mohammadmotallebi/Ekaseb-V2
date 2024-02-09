@@ -193,7 +193,7 @@ Route::delete('ShopItems/destroy', [ShopItemsController::class, 'destroy']);
 Route::delete('ShopItems/destroy-selections', [ShopItemsController::class, 'destroySelections'])->middleware('auth', 'permission:shop-item_delete');
 Route::get('ShopItems/{id}/edit', [ShopItemsController::class, 'edit'])->middleware('auth', 'permission:shop-item_edit');
 Route::patch('ShopItems/update', [ShopItemsController::class, 'update'])->middleware('auth', 'permission:shop-item_edit');
-Route::get('ShopItems/edit-multi', [ShopItemsController::class, 'editMulti'])->middleware('auth', 'permission:shop-item_edit');
+Route::get('ShopItems/edit-multi/{shop_id}', [ShopItemsController::class, 'editMulti'])->middleware('auth', 'permission:shop-item_edit');
 Route::patch('ShopItems/update-multi', [ShopItemsController::class, 'updateMulti'])->middleware('auth', 'permission:shop-item_edit');
 Route::get('ShopItems/add', [ShopItemsController::class, 'addNum'])->middleware('auth', 'permission:shop-item_edit');
 Route::get('ShopItems/minus', [ShopItemsController::class, 'minusNum'])->middleware('auth', 'permission:shop-item_edit');

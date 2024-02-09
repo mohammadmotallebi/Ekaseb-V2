@@ -64,9 +64,9 @@
 {{--                            title="{!! __('lang.addMulti')  !!}"--}}
 {{--                            class="btn btn-info btn-sm"--}}
 {{--                            id="addMultiChildItem">{!! __('lang.addMultiButton')  !!}</button>--}}
-                    <button type="button" data-toggle="tooltip" data-placement="top" title="{!! __('lang.edit')  !!}"
-                            class="btn btn-warning btn-sm"
-                            id="editMultiChildItem">{!! __('lang.editButton')  !!}</button>
+{{--                    <button type="button" data-toggle="tooltip" data-placement="top" title="{!! __('lang.edit')  !!}"--}}
+{{--                            class="btn btn-warning btn-sm"--}}
+{{--                            id="editMultiChildItem">{!! __('lang.editButton')  !!}</button>--}}
                     <button type="button" data-toggle="tooltip" data-placement="top" title="{!! __('lang.add')  !!}"
                             class="btn btn-success btn-sm" id="addChildItem">{!! __('lang.addButton')  !!}</button>
                     <button type="button" data-toggle="tooltip" data-placement="top" title="{!! __('lang.delete') !!}  "

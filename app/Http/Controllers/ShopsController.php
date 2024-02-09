@@ -74,7 +74,8 @@ class ShopsController extends Controller
                 'shop_unique_id' => $int,
                 'email' => $request->get('email'),
                 'website' => $request->get('website'),
-                'estate_id' => $request->get('estate_id')
+                'estate_id' => $request->get('estate_id'),
+                'shop_manager' => $request->get('owner_id'),
             ]);
             $shop->save();
             DB::commit();
@@ -93,8 +94,10 @@ class ShopsController extends Controller
 
     public function show($id)
     {
-        $shop = Shop::find($id);
-        return view('shops.view', ['shop' => $shop]);
+        $shop = Shop::whereId($id)->first();
+        $owner = User::whereId($shop->shop_manager)->first();
+        return view('shops.view', ['shop' => $shop, 'owner' => $owner]);
+
     }
 
 
@@ -120,6 +123,7 @@ class ShopsController extends Controller
             'email' => $request->get('email'),
             'website' => $request->get('website'),
             'estate_id' => $request->get('estate_id'),
+            'shop_manager' => $request->get('owner_id'),
         ]);
         if ($shop) {
             $s = Shop::find($id);

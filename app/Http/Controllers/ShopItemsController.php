@@ -950,7 +950,7 @@ WHERE        (shop_items.unique_code = ? AND buy_date IS NOT NULL)', [$id]);
     public function editMulti()
     {
 
-        $category = $this->lookUp->ItemCategories();
+        $category = ItemCategory::where('shop_id', \request('shop_id'))->get();
 //        $shopitem = ShopItem::find($id);
         return view('shop_items.edit_multi', ['category' => $category]);
     }

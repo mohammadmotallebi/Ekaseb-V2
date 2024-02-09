@@ -26,7 +26,7 @@
     </tr>
     <tr>
         <td>@lang('lang.manager')</td>
-        <td>{{ $shop->shop_manager }}</td>
+        <td>{{ $owner->name . ' ' . $owner->family }}</td>
     </tr>
     </tbody>
 </table>
