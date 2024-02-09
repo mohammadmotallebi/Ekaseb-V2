@@ -32,7 +32,7 @@ itemCategoryRender = () => {
                     }
                 },
                 onContentReady: function () {
-                    $('#item_category_name').val(row.item_category_name);
+                    $('#item_category_name').val(row.item_category);
                 },
                 onClose: function () {
 

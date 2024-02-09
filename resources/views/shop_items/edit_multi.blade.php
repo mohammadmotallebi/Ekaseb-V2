@@ -30,7 +30,7 @@
             ' <select id="cat_' + i + '" name="cat_' + i + '" class="custom-select">' +
             '<option></option>' +
             '@forelse($category as $x)' +
-            ' <option value="{{$x->id}}">{{$x->item_category_name}}</option>' +
+            ' <option value="{{$x->id}}">{{$x->item_category}}</option>' +
             '  @endforeach' +
             '</select>' +
             '</div>' +

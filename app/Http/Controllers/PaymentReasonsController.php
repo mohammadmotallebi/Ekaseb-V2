@@ -68,7 +68,7 @@ class PaymentReasonsController extends Controller
         return PaymentReason::find(\request('id'))->update([
             'reason' => \request('reason'),
             'fund_id' => \request('fund_id'),
-            'for_contract' => \request('for_contract'),
+            'for_contract' => \request('for_contract') === 'on' ? 1 : 0
 
         ]);
     }

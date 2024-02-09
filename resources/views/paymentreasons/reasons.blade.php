@@ -28,13 +28,13 @@
 <script>
     function operateFormatterPaymentReason(value, row, index) {
         return [
-            "<div class='btn-group' role='group' aria-label='Basic example'>" +
-            "<button type='button' id='edit' data-toggle='tooltip' data-placement='top'  title='@lang('lang.edit')' class='btn btn-primary btn-sm'><i class='fa fa-edit'></i></button>" +
-            "<button type='button' id='delete' data-toggle='tooltip' data-placement='top' title='@lang('lang.delete')' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></button></div>",
+            `<div class='btn-group' role='group' aria-label='Basic example'>`,
+            `<button type='button' id='edit' data-toggle='tooltip' data-placement='top'  title='@lang('lang.edit')' class='btn btn-primary btn-sm'><i class='fa fa-edit'></i></button>`,
+            `<button type='button' id='delete' data-toggle='tooltip' data-placement='top' title='@lang('lang.delete')' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></button></div>`,
         ].join('')
     }
     function operateFormatterForContract(value, row, index) {
-            if(value === '1'){
+            if(value === 1){
                 return `<i class="fa fa-check-circle text-success text-lg"></i>`
             }else{
                 return `<i class="fa fa-times-circle text-danger text-lg"></i>`

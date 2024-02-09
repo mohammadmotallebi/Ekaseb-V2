@@ -56,7 +56,8 @@ class ColorsController extends Controller
      */
     public function store(Request $request)
     {
-        $color = new Colors([
+        $color = new Color([
+            'id' => Str::uuid(),
             'color_name' => $request->get('color_name'),
         ]);
         $color->save();

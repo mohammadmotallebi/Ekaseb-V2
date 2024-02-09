@@ -37,7 +37,7 @@ class GendersController extends Controller
 
     public function store(Request $request)
     {
-        $gender = new Genders([
+        $gender = new Gender([
             'gender_name' => $request->get('gender_name'),
         ]);
         $gender->save();

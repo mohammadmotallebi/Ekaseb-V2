@@ -43,7 +43,7 @@ class ItemCategoriesController extends Controller
 
     public function store()
     {
-        $name = \request('item_name',\request('item_category'));
+        $name = \request('item_name',\request('item_category_name'));
         $shopItemCategory = new ItemCategory([
             'item_category' => $name,
             'shop_id' => \request('shop')
@@ -90,7 +90,7 @@ class ItemCategoriesController extends Controller
     public function update(Request $request)
     {
         $id = $request->id;
-        $name = \request('item_name',\request('item_category'));
+        $name = \request('item_name',\request('item_category_name'));
         return ItemCategory::whereId($id)->update([
             'item_category' => $name
         ]);
