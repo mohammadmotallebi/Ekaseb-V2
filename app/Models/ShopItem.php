@@ -8,6 +8,9 @@ use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
 
 
+/**
+ * @method static where(string $string, $unique_code)
+ */
 class ShopItem extends Model
 {
     public $timestamps = false;

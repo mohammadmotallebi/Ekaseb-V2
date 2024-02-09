@@ -37,7 +37,12 @@ shopsRender = () => {
             "ShopItemCategories/store",
             "ShopItemCategoriesForm",
             "#item_cat_id",
-            "get-ShopItemCategories-select"
+            "get-ShopItemCategories-select",
+            (e) => {
+                e.onContentReady = () => {
+                    e.$content.find("#shop_id").val(rowID);
+                };
+            }
         );
         addQuickly(
             "#add_type",

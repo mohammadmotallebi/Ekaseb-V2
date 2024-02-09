@@ -19,14 +19,14 @@ class ItemPricesController extends Controller
 
     public function store()
     {
-        $codes = ItemCode::where('item_id', cache('uc'))->get();
+        $codes = ItemCode::where('unique_code', request('unique_code'))->get();
         \Cache::forget('price');
         try {
             foreach ($codes as $code) {
                 ItemPrice::create([
                     'item_price' => arabicToEnglishNumber(str_replace(',', '', \request('item_price'))),
                     'item_code' => $code->item_code,
-                    'unique_code' => cache('uc'),
+                    'unique_code' => request('unique_code'),
                     'add_date' => fullDate(),
                     'status' => 1,
                 ]);

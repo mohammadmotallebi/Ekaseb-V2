@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ItemPrice whereItemPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ItemPrice whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ItemPrice whereUniqueCode($value)
+ * @method static where(string $string, $unique_code)
  * @mixin \Eloquent
  */
 class ItemPrice extends Model

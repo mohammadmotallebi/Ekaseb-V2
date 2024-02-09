@@ -23,7 +23,7 @@ class ItemSuppliersController extends Controller
         return view('shop_items.item_supplier.create');
     }
 
-    public function store($shop)
+    public function store($shop): int
     {
         if (ItemSupplier::where('shop_id', $shop)->count() > 0) {
             $c = ItemSupplier::where('shop_id', $shop)->orderBy('id', 'desc')->first();
@@ -41,13 +41,10 @@ class ItemSuppliersController extends Controller
         ]);
         $c->save();
         if ($c->id > 0) {
-            return json_encode([
-                'id' => $c->id,
-                'name' => $name
-            ]);
-        } else {
-            return 0;
+            return 1;
         }
+
+        return 0;
     }
     public function update(Request $request)
     {

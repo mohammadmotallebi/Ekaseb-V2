@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ItemScore whereStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ItemScore whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ItemScore whereUniqueCode($value)
+ * @method static where(string $string, $unique_code)
  * @mixin \Eloquent
  */
 class ItemScore extends Model

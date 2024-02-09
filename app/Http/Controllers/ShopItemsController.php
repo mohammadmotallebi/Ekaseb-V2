@@ -44,7 +44,7 @@ class ShopItemsController extends Controller
 
     public function create($shop)
     {
-        $category = ItemCategory::all();
+        $category = ItemCategory::where('shop_id', $shop)->get();
         $color = ItemColor::all();
         $supplier = ItemSupplier::where('shop_id', $shop)->get();
         return view('shop_items.create', ['category' => $category, 'color' => $color, 'unique_code' => randomString(32), 'supplier' => $supplier]);
@@ -85,10 +85,7 @@ class ShopItemsController extends Controller
         ]);
         $shopItemType->save();
         if ($shopItemType->id > 0) {
-            return json_encode([
-                'id' => $shopItemType->id,
-                'name' => $name
-            ]);
+            return 1;
         } else {
             return 0;
         }
@@ -182,10 +179,7 @@ class ShopItemsController extends Controller
         ]);
         $shopItemModel->save();
         if ($shopItemModel->id > 0) {
-            return json_encode([
-                'id' => $shopItemModel->id,
-                'name' => $name
-            ]);
+            return 1;
         } else {
             return 0;
         }
@@ -244,10 +238,7 @@ class ShopItemsController extends Controller
         ]);
         $shopItemSize->save();
         if ($shopItemSize->id > 0) {
-            return json_encode([
-                'id' => $shopItemSize->id,
-                'name' => $name
-            ]);
+            return 1;
         } else {
             return 0;
         }
@@ -306,10 +297,7 @@ class ShopItemsController extends Controller
         ]);
         $shopItemColor->save();
         if ($shopItemColor->id > 0) {
-            return json_encode([
-                'id' => $shopItemColor->id,
-                'name' => $name
-            ]);
+            return 1;
         } else {
             return 0;
         }
@@ -381,11 +369,10 @@ class ShopItemsController extends Controller
         if ($items->save()) {
             for ($i = 0; $i < $count; $i++) {
                 $c = $shop->shop_unique_id . '' . randomCode(setting()->number_of_item_code_digit - setting()->number_of_shop_unique_code_digit);
-                $code = new ItemCode([
-                    'item_id' => $request->get('unique_code'),
+                $code = ItemCode::insert([
+                    'unique_code' => $request->get('unique_code'),
                     'item_code' => $c,
                 ]);
-                $code->save();
             }
 
         }
@@ -897,10 +884,10 @@ WHERE        (shop_items.unique_code = ? AND buy_date IS NOT NULL)', [$id]);
         $shopitem = ShopItem::find($id);
         $uc = $shopitem->unique_code;
         $category = ItemCategory::where('shop_id', $shopitem->shop_id)->get();
-        $c = ItemCode::where('item_id', $uc)->get(['item_code', 'id']);
-        $bill = BillItem::whereIn('item_id', $c->pluck('id')->toArray())->first()->item_id ?? 0;
-        $codes = ItemCode::where('item_id', $uc)->get()->except($bill)->pluck('item_code');
-        $count = ItemCode::where('item_id', $uc)->get()->except($bill)->count();
+        $c = ItemCode::where('unique_code', $uc)->get(['item_code', 'id']);
+        $bill = BillItem::whereIn('item_code_id', $c->pluck('id')->toArray())->first()->item_id ?? 0;
+        $codes = ItemCode::where('unique_code', $uc)->get()->except($bill)->pluck('item_code');
+        $count = ItemCode::where('unique_code', $uc)->get()->except($bill)->count();
         $color = ItemColor::all();
         $types = ItemType::where('shop_item_category_id', $shopitem->item_cat_id)->where('shop_id', $shopitem->shop_id)->get();
         $supplier = ItemSupplier::where('shop_id', $shopitem->shop_id)->get();
@@ -1006,11 +993,11 @@ WHERE        (shop_items.unique_code = ? AND buy_date IS NOT NULL)', [$id]);
             DB::beginTransaction();
             $id = $request->id;
             $shop = ShopItem::where('unique_code', $id)->first()->shop_id;
-            $c = ItemCode::where('item_id', $id)->get()->pluck('id')->toArray();
-            $bill = BillItem::whereIn('item_id', $c)->count();
+            $c = ItemCode::where('unique_code', $id)->get()->pluck('id')->toArray();
+            $bill = BillItem::whereIn('item_code_id', $c)->count();
             if ($bill === 0) {
                 ShopItem::where('unique_code', $id)->delete();
-                ItemCode::where('item_id', $id)->delete();
+                ItemCode::where('unique_code', $id)->delete();
                 ItemPrice::where('unique_code', $id)->delete();
                 ItemCredit::where('unique_code', $id)->delete();
                 ItemScore::where('unique_code', $id)->delete();

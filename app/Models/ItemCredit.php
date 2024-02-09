@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ItemCredit whereStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ItemCredit whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ItemCredit whereUniqueCode($value)
+ * @method static where(string $string, $unique_code)
  * @mixin \Eloquent
  */
 class ItemCredit extends Model

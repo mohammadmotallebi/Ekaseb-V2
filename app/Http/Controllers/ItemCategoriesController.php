@@ -46,17 +46,14 @@ class ItemCategoriesController extends Controller
         $name = \request('item_name',\request('item_category_name'));
         $shopItemCategory = new ItemCategory([
             'item_category' => $name,
-            'shop_id' => \request('shop')
+            'shop_id' => \request('shop_id')
         ]);
         $shopItemCategory->save();
         if ($shopItemCategory->id > 0) {
-            return json_encode([
-                'id' => $shopItemCategory->id,
-                'name' => $name
-            ]);
-        } else {
-            return 0;
+            return 1;
         }
+
+        return 0;
     }
 
     /**

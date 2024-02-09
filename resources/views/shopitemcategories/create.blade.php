@@ -1,4 +1,5 @@
 <form method="post" id="ShopItemCategoriesForm" class="was-validated">
+    <input id="shop_id" name="shop_id" type="hidden" class="form-control" autocomplete="off" required >
     <div class="form-group row">
         <label for="item_category_name" class="col-3 col-form-label">@lang('lang.category')</label>
         <div class="col-8">
