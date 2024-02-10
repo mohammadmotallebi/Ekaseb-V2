@@ -99,6 +99,31 @@ class ChequesController extends Controller
         return view('cheques.cost_view', ['cheque' => $cheque]);
     }
 
+    public function editCostForm($id)
+    {
+        return view('cheques.cost_edit', ['cheque' => Cost::whereId($id)->first()]);
+    }
+
+    public function updateCost()
+    {
+        $this->costValidation();
+        try {
+            Cost::whereId(\request('id'))->update([
+                'cost_date' => \request('cost_date'),
+                'cheque_number' => \request('cheque_number'),
+                'price' => str_replace(',', '', \request('price')),
+                'cheque_date' => \request('cheque_date'),
+                'bank' => \request('bank'),
+                'bank_branch' => \request('bank_branch'),
+                'account_number' => \request('account_number'),
+                'cost_type_id' => \request('cost_type_id'),
+                'note' => \request('note')
+            ]);
+            return 1;
+        } catch (QueryException $e) {
+            return $e;
+        }
+    }
     public function editForm($id)
     {
         return view('cheques.edit', ['cheque' => Payment::whereId($id)->first()]);

@@ -26,7 +26,7 @@
         <div class="col-8">
             <select id="bank" name="bank" class="custom-select" required>
                 <option></option>
-                @forelse(banks() as $x)
+                @foreach(banks() as $x)
                     <option value="{{$x->id}}">{{$x->bank_name}}</option>
                     @endforeach
             </select>
@@ -57,7 +57,7 @@
         <div class="col-8">
             <select id="cost_type_id" name="cost_type_id" class="custom-select" required>
                 <option></option>
-                @forelse(costTypes() as $x)
+                @foreach(costTypes() as $x)
                     <option value="{{$x->id}}">{{$x->cost_type}}</option>
                     @endforeach
             </select>

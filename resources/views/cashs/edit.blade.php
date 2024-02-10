@@ -1,5 +1,5 @@
 <form method="post" id="cashEditForm" class="was-validated" autocomplete="off">
-    @if(previous_route() == 'payments')
+    @if(previous_route() === 'payments')
         <div class="form-group row">
             <label for="user_id" class="col-2 col-form-label">{{ __('lang.user') }}</label>
             <div class="col-8">
