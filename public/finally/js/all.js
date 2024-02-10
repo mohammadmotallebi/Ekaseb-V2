@@ -10383,7 +10383,7 @@ paymentContractRender = () => {
             });
         },
         'click #view': function (e, value, row, index) {
-            if (row.payment_method == 'cash') {
+            if (row.payment_method === 'cash') {
                 $.confirm({
                     title: fa.view,
                     content: 'url: cashs/' + row.id + '/view',
@@ -10398,7 +10398,7 @@ paymentContractRender = () => {
                         }
                     }
                 });
-            } else if (row.payment_method == 'cheque') {
+            } else if (row.payment_method === 'cheque') {
                 $.confirm({
                     title: fa.view,
                     content: 'url: cheques/' + row.id + '/view',
@@ -10421,7 +10421,7 @@ paymentContractRender = () => {
     $(document).on('click', 'button#chequeadd', function (clickEvent) {
         let error = false;
         global.user_id = document.querySelector('#renter_id').value;
-        document.querySelector('#contractForm').elements.forEach((el) => {
+        document.querySelectorAll('#contractForm').forEach((el) => {
             if( el.id === 'rent' ||
                 // el.id === 'charge'||
                 el.id === 'renter_id'||
@@ -10532,7 +10532,7 @@ paymentContractRender = () => {
     $(document).on('click', 'button#cashadd', function (clickEvent) {
         let contract_form_error = false;
         global.user_id = document.querySelector('#renter_id').value;
-        document.querySelector('#contractForm').elements.forEach((el) => {
+        document.querySelectorAll('#contractForm').forEach((el) => {
             if( el.id === 'rent' ||
                 // el.id === 'charge'||
                 el.id === 'renter_id'||
