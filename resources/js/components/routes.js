@@ -149,6 +149,17 @@ export default [
     },
 
     {
+        path: "/add-item-popup",
+        id: "add-item-popup",
+        popup: {
+            component: AddItemPopup,
+        },
+        options: {
+            transition: "f7-parallax",
+        },
+    },
+
+    {
         path: "/sells",
         id: "sells",
         component: SellsList,

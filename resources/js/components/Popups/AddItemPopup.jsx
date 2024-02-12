@@ -28,16 +28,16 @@ import React, {
 } from "react";
 import { Dom7 as $$, request, getDevice } from "framework7";
 import store from "../store/store";
-
-export default ({ itemProps, edit }) => {
+export default (props) => {
     const [max, setMax] = useState(0);
-    const shopId = useStore("shopId");
+    const [shopId, setShopId] = useState(0);
     const image = useStore("image");
     const [formDataState, setFormDataState] = useState({});
     const [navbar, setNavbar] = useState();
     const price = useRef("");
     const [priceString, setPriceString] = useState({price : ""});
-    const loading = useStore("loading");
+    const [itemDetails, setItemDetails] = useState([]);
+    const [colors, setColors] = useState([]);
     const dv = getDevice();
     let notificationOk = f7.notification.create({
         icon: '<i class="f7-icons">checkmark_circle</i>',
@@ -57,20 +57,30 @@ export default ({ itemProps, edit }) => {
         closeTimeout: 3000,
         closeOnClick: true,
     });
+    
+    const handleItemDetails = async () => {
+        await fetch(f7.params.home + "Shops/get-shopItems-data/" + props.shopId)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('ItemDetails =>', data)
+                setItemDetails(data);
+            });
+    }
 
     useEffect(() => {
+
         if (dv.android) {
             setNavbar(
                 <Navbar>
                     <NavRight>
                         <Link popupClose iconF7="multiply_circle_fill"></Link>
-                        <NavTitle>{edit ? fa.edit_item : fa.add_item}</NavTitle>
+                        <NavTitle>{props.edit ? fa.edit_item : fa.add_item}</NavTitle>
                     </NavRight>
                     <NavLeft>
                         <Button
                             id="submit"
                             fill
-                            text={edit ? fa.buttons.edit : fa.buttons.add}
+                            text={eprops.dit ? fa.buttons.edit : fa.buttons.add}
                             onClick={submit}
                         ></Button>
                     </NavLeft>
@@ -82,13 +92,13 @@ export default ({ itemProps, edit }) => {
                 <Navbar>
                     <NavLeft>
                         <Link popupClose iconF7="multiply_circle_fill"></Link>
-                        <NavTitle>{edit ? fa.edit_item : fa.add_item}</NavTitle>
+                        <NavTitle>{props.edit ? fa.edit_item : fa.add_item}</NavTitle>
                     </NavLeft>
                     <NavRight>
                         <Button
                             id="submit"
                             fill
-                            text={edit ? fa.buttons.edit : fa.buttons.add}
+                            text={props.edit ? fa.buttons.edit : fa.buttons.add}
                             onClick={submit}
                         ></Button>
                     </NavRight>
@@ -98,7 +108,8 @@ export default ({ itemProps, edit }) => {
     }, [dv.os]);
 
     useEffect(() => {
-        setFormDataState({ ...itemProps });
+        console.log('ItemProps =>', props)
+        setFormDataState({ ...itemDetails });
     }, []);
 
     const calScore = (price, change = false) => {
@@ -112,10 +123,10 @@ export default ({ itemProps, edit }) => {
             score = 0;
         if (price > 0) {
             $$(
-                edit ? "#range_score_slider-edit" : "#range_score_slider-add"
+                props.edit ? "#range_score_slider-edit" : "#range_score_slider-add"
             ).empty();
             f7.range.destroy(
-                edit ? "#range_score_slider-edit" : "#range_score_slider-add"
+                props.edit ? "#range_score_slider-edit" : "#range_score_slider-add"
             );
             let a = arr.filter((a) => a.price >= price).shift();
             let res = Math.ceil((price * ((a.max * 100) / a.price)) / 100);
@@ -124,7 +135,7 @@ export default ({ itemProps, edit }) => {
             $$("#item_score").val(score);
             setMax(max);
             f7.range.create({
-                el: edit
+                el: props.edit
                     ? "#range_score_slider-edit"
                     : "#range_score_slider-add",
                 min: 1,
@@ -150,8 +161,8 @@ export default ({ itemProps, edit }) => {
         }
     };
 
-    const loadFunctions = () => {
-        f7.preloader.show();
+    const loadFunctions = async () => {
+        await handleItemDetails()
         f7.form.fillFromData("#add_item_form", {
             id: 1,
             images: [],
@@ -184,45 +195,49 @@ export default ({ itemProps, edit }) => {
     const handleHTML = useCallback(() => {
         store.dispatch("getSupplier", {
             id: shopId,
-            sup_id: itemProps?.supplier_id,
+            sup_id: itemDetails?.supplier_id,
         });
         store.dispatch("getCategory", {
             id: shopId,
-            cat_id: itemProps?.category_id,
-            type_id: itemProps?.type_id,
-            mod_id: itemProps?.model_id,
-            size_id: itemProps?.size_id,
+            cat_id: itemDetails?.category_id,
+            type_id: itemDetails?.type_id,
+            mod_id: itemDetails?.model_id,
+            size_id: itemDetails?.size_id,
         });
-        store.dispatch("getColor", { id: shopId, col_id: itemProps?.color_id });
-
-        f7.preloader.hide();
-        /*
-                request.get(f7.params.home + "Shops/get-shopper-home", function (data) {
-                    !edit && f7.preloader.hide();
-                    setRemainscore(JSON.parse(data).score);
-                    $$("#score").keyup(function (e) {
-                        if (e.target.value * $$("#item_count").val() > remainscore) {
-                            $$("#submit").hide();
-                            $$("#alarm_g554688879").show();
-                        } else {
-                            $$("#submit").show();
-                            $$("#alarm_g554688879").hide();
-                        }
-                    });
-                    $$("#item_count").keyup(function (e) {
-                        if (e.target.value * $$("#score").val() > remainscore) {
-                            $$("#submit").hide();
-                            $$("#alarm_g554688879").show();
-                        } else {
-                            $$("#submit").show();
-                            $$("#alarm_g554688879").hide();
-                        }
-                    });
-        
-        
-                });
-        */
+        // store.dispatch("getColor", { id: shopId, col_id: itemDetails?.color_id });
+        console.log("Edit =>", itemDetails);
+        handleColor();
     }, [shopId]);
+
+    const handleColor = async (e) => {
+        let options = "";
+        await fetch(f7.params.home + "get-shop-colors/" + props.shopId)
+            .then((response) => response.json())
+            .then((data) => {
+                data.forEach(function (opt) {
+                    options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(opt.id) ? " selected" : "", ">").concat(opt.item_color, "</option>");
+                });
+                if (opt.id !== "") {
+                    $$("#s_id_r656535")
+                        .find(".item-after")
+                        .text(data.filter(function (o) { return String(o.id) === String(opt.id); })[0].item_color);
+                }
+                if (data.length < 1) {
+                    $$("select#item_color_id").html("");
+                    $$("#s_id_r656535")
+                        .find(".item-after")
+                        .text("یافت نشد!");
+                    return false;
+                }
+                options =
+                    "<option value=\"select\">".concat(fa.select, "</option>") +
+                    options;
+                $$("select#item_color_id").html(options);
+                if (opt.id === "") {
+                    $$("#s_id_r656535").find(".item-after").text(fa.select);
+                }
+            });
+    }
 
     const clearImages = () => {
         store.dispatch("setImages", []);
@@ -231,7 +246,7 @@ export default ({ itemProps, edit }) => {
     };
 
     const submit = (e) => {
-        const form = edit ? "#edit_item_form" : "#add_item_form";
+        const form = props.edit ? "#edit_item_form" : "#add_item_form";
         $$(this).addClass("disabled");
         f7.form.fillFromData("#add_item_form", {
             item_name: formDataState.item_name,
@@ -243,7 +258,7 @@ export default ({ itemProps, edit }) => {
 
         formData["id"] = store.getters.shopId.value;
         formData.images = store.state.image;
-        formData.unique_code = itemProps?.unique_code;
+        formData.unique_code = itemDetails?.unique_code;
 
         if (
             formData.item_name === "" ||
@@ -306,8 +321,9 @@ export default ({ itemProps, edit }) => {
 
     return (
         <Popup
-            className={edit ? "edit-item" : "add-item"}
+            className={props.edit ? "edit-item" : "add-item"}
             noSwipeback
+
             onPopupOpened={handleHTML}
             onPopupOpen={loadFunctions}
             onPopupClose={clearImages}
@@ -316,7 +332,7 @@ export default ({ itemProps, edit }) => {
                 {navbar}
                 <List
                     form={true}
-                    id={edit ? "edit_item_form" : "add_item_form"}
+                    id={props.edit ? "edit_item_form" : "add_item_form"}
                     method={"post"}
                     className={"text-align-right"}
                 >
@@ -412,7 +428,7 @@ export default ({ itemProps, edit }) => {
                             }
                             f7.range
                                 .get(
-                                    edit
+                                    props.edit
                                         ? "#range_score_slider-edit"
                                         : "#range_score_slider-add"
                                 )
@@ -423,7 +439,7 @@ export default ({ itemProps, edit }) => {
                         <div
                             className="range-slider"
                             id={
-                                edit
+                                props.edit
                                     ? "range_score_slider-edit"
                                     : "range_score_slider-add"
                             }
@@ -453,7 +469,7 @@ export default ({ itemProps, edit }) => {
                             //                   },
 
                             renderItem(item) {
-                                if (item.value === itemProps?.supplier_id) {
+                                if (item.value === itemDetails?.supplier_id) {
                                     item.selected = true;
                                 }
                                 store.state.sid = item.id;
@@ -510,7 +526,7 @@ export default ({ itemProps, edit }) => {
                             popupCloseLinkText: fa.close_icon,
                             closeOnSelect: true,
                             renderItem(item) {
-                                if (item.value === itemProps?.category_id) {
+                                if (item.value === itemDetails?.category_id) {
                                     item.selected = true;
                                 }
                                 store.state.sid = item.id;
@@ -588,7 +604,7 @@ export default ({ itemProps, edit }) => {
                                     }
                                     store.dispatch("getType", {
                                         id: e.getValue(),
-                                        type_id: itemProps?.type_id,
+                                        type_id: itemDetails?.type_id,
                                     });
                                 },
                             },
@@ -599,7 +615,7 @@ export default ({ itemProps, edit }) => {
                             name="item_cat_id"
                             id={"item_cat_id"}
                             className={"text-align-right"}
-                            defaultValue={itemProps?.category_id}
+                            defaultValue={itemDetails?.category_id}
                         ></select>
                     </ListItem>
                     <ListItem
@@ -612,7 +628,7 @@ export default ({ itemProps, edit }) => {
                             closeOnSelect: true,
                             disabled: true,
                             renderItem(item) {
-                                if (item.value === itemProps?.type_id) {
+                                if (item.value === itemDetails?.type_id) {
                                     item.selected = true;
                                 }
                                 store.state.sid = item.id;
@@ -657,11 +673,11 @@ export default ({ itemProps, edit }) => {
                                 close: function (e) {
                                     store.dispatch("getModel", {
                                         id: e.getValue(),
-                                        mod_id: itemProps?.model_id,
+                                        mod_id: itemDetails?.model_id,
                                     });
                                     store.dispatch("getSize", {
                                         id: e.getValue(),
-                                        size_id: itemProps?.size_id,
+                                        size_id: itemDetails?.size_id,
                                     });
                                 },
                             },
@@ -683,7 +699,7 @@ export default ({ itemProps, edit }) => {
                             popupCloseLinkText: fa.close_icon,
                             closeOnSelect: true,
                             renderItem(item) {
-                                if (item.value === itemProps?.model_id) {
+                                if (item.value === itemDetails?.model_id) {
                                     item.selected = true;
                                 }
                                 store.state.sid = item.id;
@@ -744,7 +760,7 @@ export default ({ itemProps, edit }) => {
                             popupCloseLinkText: fa.close_icon,
                             closeOnSelect: true,
                             renderItem(item) {
-                                if (item.value === itemProps?.size_id) {
+                                if (item.value === itemDetails?.size_id) {
                                     item.selected = true;
                                 }
                                 store.state.sid = item.id;
@@ -805,7 +821,7 @@ export default ({ itemProps, edit }) => {
                             popupCloseLinkText: fa.close_icon,
                             closeOnSelect: true,
                             renderItem(item) {
-                                if (item.value === itemProps?.color_id) {
+                                if (item.value === itemDetails?.color_id) {
                                     item.selected = true;
                                 }
                                 return `<div class="row no-gap" id="row-${

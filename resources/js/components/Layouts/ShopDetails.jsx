@@ -29,8 +29,8 @@ export default function ShopDetails(props) {
 
     // Load Shop Items and Push to State
     const loadItems = async () => {
-        console.log(props.data)
-        await fetch(f7.params.home + 'Shops/get-shopItems-data/' + props.data.id)
+        console.log('ID =>',props.data)
+        await fetch(f7.params.home + 'Shops/get-shopItems-data/' + props.data)
             .then((response) => response.json())
             .then((data) => {
                 f7.store.dispatch('setFavShop', props.data.id);

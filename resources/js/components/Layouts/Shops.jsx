@@ -85,7 +85,7 @@ export default function Shops(props) {
                                 swipeToClose: true,
                                 animate: true
                             }).open();
-                            console.log(shopDetail)
+                            console.log('Shop=>',shopDetail)
                         }}
                     >
                         <div slot="media" className={"item-after"}>

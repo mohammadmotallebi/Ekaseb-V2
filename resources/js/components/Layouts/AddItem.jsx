@@ -15,10 +15,10 @@ const dv = getDevice();
 
 export default ({f7router}) => {
     const [shopSelect, setShopSelect] = useState([]);
-    const [itemId, setItemId] = useState();
-    const itemList = useStore('getItemDetail');
+    const [item, setItem] = useState();
+    const [itemList, setItemList] = useState([]);
     const loading = useStore('loading');
-    const shopId = useStore('shopId');
+    const [shopId, setShopId] = useState(0);
 
 
     const initPage = async () => {
@@ -26,11 +26,13 @@ export default ({f7router}) => {
             .then((response) => response.json())
             .then((data) => {
                     setShopSelect(data);
+                console.log('Shop ID =>', data)
                     store.dispatch('setItemDetail', data[0].id)
                     $$("#s_id_g656534")
                         .find(".item-after")
                         .text(data[0].shop_name);
-                    store.dispatch('setShopId', data[0].id);
+                    // store.dispatch('setShopId', data[0].id);
+                    setShopId(data[0].id);
             });
     }
 
@@ -38,6 +40,17 @@ export default ({f7router}) => {
         initPage()
     }, []);
 
+    useEffect(() => {
+        loadItems()
+    }, [shopId]);
+
+    const loadItems = async () => {
+        await fetch(f7.params.home + "Shops/get-shopItems-data/" + shopId)
+            .then((response) => response.json())
+            .then((data) => {
+                setItemList(data);
+            });
+    }
 
    const showAddButton = () => {
             $$("#add_item-fab").removeClass("disabled");
@@ -79,8 +92,8 @@ export default ({f7router}) => {
                         closeOnSelect: true,
                         on: {
                             close: (e) => {
-                                store.dispatch('setItemDetail', e.getValue());
-                                store.dispatch('setShopId', e.getValue());
+                                loadItems()
+                                setShopId(e.selectEl.selectedOptions[0].value)
                             },
                         },
                     }}
@@ -107,7 +120,6 @@ export default ({f7router}) => {
                         <li key={item.id * Math.floor(Math.random() * 1000000)} className="row no-gap" style={{borderBottom: '1px solid #ccc', margin: 0, alignItems: 'normal',fontSize:'0.8rem'}}>
                             <a onClick={() => {
                                 f7router.navigate("/item_detail_popup/", {props: {itemProps: item}})
-                                setItemId(item.id)
                             }} className="item-link col-70">
                                 <div className="item-content">
                                     <div className="item-inner">
@@ -136,7 +148,7 @@ export default ({f7router}) => {
 
             <ItemDetailPopup/>
 
-            <AddItemPopup edit={false}/>
+            <AddItemPopup edit={false} itemProps={shopId} />
 
             <Fab
                 position="center-bottom"
@@ -147,7 +159,9 @@ export default ({f7router}) => {
                 style={{color: "var(--f7-fab-text-color)", bottom: '-200px'}}
                 color="var(--f7-theme-color)"
                 onClick={() => {
-                    f7.popup.open(".add-item");
+                    f7router.navigate("/add-item-popup/",{
+                        props: {shopId: shopId, edit: false},
+                    })
                 }}
             >
                 <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>

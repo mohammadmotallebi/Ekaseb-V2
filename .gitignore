@@ -16,3 +16,4 @@ yarn-error.log
 /.vscode
 /.well-known
 *.zip
+.env
