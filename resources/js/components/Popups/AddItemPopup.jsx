@@ -38,6 +38,9 @@ export default (props) => {
     const [priceString, setPriceString] = useState({price : ""});
     const [itemDetails, setItemDetails] = useState([]);
     const [colors, setColors] = useState([]);
+    const [typeId, setTypeId] = useState("");
+    const [modelId, setModelId] = useState("");
+    const [sizeId, setSizeId] = useState("");
     const dv = getDevice();
     let notificationOk = f7.notification.create({
         icon: '<i class="f7-icons">checkmark_circle</i>',
@@ -58,14 +61,14 @@ export default (props) => {
         closeOnClick: true,
     });
     
-    const handleItemDetails = async () => {
-        await fetch(f7.params.home + "Shops/get-shopItems-data/" + props.shopId)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('ItemDetails =>', data)
-                setItemDetails(data);
-            });
-    }
+    // const handleItemDetails = async () => {
+    //     await fetch(f7.params.home + "Shops/get-shopItems-data/" + props.shopId)
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             console.log('ItemDetails =>', data)
+    //             setItemDetails(data);
+    //         });
+    // }
 
     useEffect(() => {
 
@@ -162,7 +165,10 @@ export default (props) => {
     };
 
     const loadFunctions = async () => {
-        await handleItemDetails()
+        await handleCategory()
+        await handleColor();
+        await handleType();
+        await handleSupplier();
         f7.form.fillFromData("#add_item_form", {
             id: 1,
             images: [],
@@ -192,35 +198,36 @@ export default (props) => {
             .text("نوع کالا را انتخاب کنید.");
     };
 
-    const handleHTML = useCallback(() => {
-        store.dispatch("getSupplier", {
-            id: shopId,
-            sup_id: itemDetails?.supplier_id,
-        });
-        store.dispatch("getCategory", {
-            id: shopId,
-            cat_id: itemDetails?.category_id,
-            type_id: itemDetails?.type_id,
-            mod_id: itemDetails?.model_id,
-            size_id: itemDetails?.size_id,
-        });
-        // store.dispatch("getColor", { id: shopId, col_id: itemDetails?.color_id });
-        console.log("Edit =>", itemDetails);
-        handleColor();
+    const handleHTML = useCallback(async () => {
+        // await store.dispatch("getSupplier", {
+        //     id: shopId,
+        //     sup_id: itemDetails?.supplier_id,
+        // });
+        // await store.dispatch("getCategory", {
+        //     id: shopId,
+        //     cat_id: itemDetails?.category_id,
+        //     type_id: itemDetails?.type_id,
+        //     mod_id: itemDetails?.model_id,
+        //     size_id: itemDetails?.size_id,
+        // });
+
     }, [shopId]);
 
     const handleColor = async (e) => {
         let options = "";
-        await fetch(f7.params.home + "get-shop-colors/" + props.shopId)
+        let option = "";
+        await fetch(f7.params.home + "get-shop-colors")
             .then((response) => response.json())
             .then((data) => {
                 data.forEach(function (opt) {
+                    console.log("Color =>", opt);
+                    option = opt;
                     options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(opt.id) ? " selected" : "", ">").concat(opt.item_color, "</option>");
                 });
-                if (opt.id !== "") {
+                if (option.id !== "") {
                     $$("#s_id_r656535")
                         .find(".item-after")
-                        .text(data.filter(function (o) { return String(o.id) === String(opt.id); })[0].item_color);
+                        .text(data.filter(function (o) { return String(o.id) === String(option.id); })[0].item_color);
                 }
                 if (data.length < 1) {
                     $$("select#item_color_id").html("");
@@ -233,12 +240,191 @@ export default (props) => {
                     "<option value=\"select\">".concat(fa.select, "</option>") +
                     options;
                 $$("select#item_color_id").html(options);
-                if (opt.id === "") {
+                if (option.id === "") {
                     $$("#s_id_r656535").find(".item-after").text(fa.select);
                 }
             });
     }
 
+    const handleType = async (cat_id) => {
+        let id = ""
+        $$("select#item_type_id").html("");
+        var options = "";
+        request.json(f7.params.home + "get-shop-types/" + cat_id, {}, function (fetchData, status, xhr) {
+            if (fetchData.length < 1) {
+                $$("select#item_type_id").html("");
+                $$("#s_id_t656535")
+                    .find(".item-after")
+                    .text("یافت نشد!");
+                $$("#s_id_m656535").find("a").addClass("disabled");
+                $$("#s_id_s656535").find("a").addClass("disabled");
+                $$("#s_id_t656535").find("a").removeClass("disabled");
+                return false;
+            }
+            fetchData.forEach(function (opt) {
+                id = opt.id;
+                options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(id)
+                    ? " selected"
+                    : "", ">").concat(opt.item_type, "</option>");
+                setTypeId(opt.id);
+            });
+            if (id !== "") {
+                $$("#s_id_t656535")
+                    .find(".item-after")
+                    .text(fetchData.filter(function (o) { return String(o.id) === String(id); })[0].item_type);
+            }
+            $$("#s_id_t656535").find("a").removeClass("disabled");
+            options =
+                "<option value=\"select\">".concat(fa.select, "</option>") +
+                options;
+            $$("select#item_type_id").html(options);
+            if (id === "") {
+                $$("#s_id_t656535").find(".item-after").text(fa.select);
+            }
+        });
+    }
+
+    const handleSupplier = async (e) => {
+        let id = ""
+        var options = "";
+        request.json(f7.params.home + "get-shop-suppliers/" + props.shopId, {}, function (fetchData, status, xhr) {
+            fetchData.forEach(function (opt) {
+                id = opt.id;
+                options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(id) ? "selected" : "", " >").concat(opt.item_supplier, "</option>");
+            });
+            if (id !== "") {
+                $$("#s_id_c656535")
+                    .find(".item-after")
+                    .text(fetchData.filter(function (o) { return String(o.id) === String(id); })[0].item_supplier);
+            }
+            if (fetchData.length < 1) {
+                $$("select#item_supplier_id").html("");
+                $$("#s_id_c656535")
+                    .find(".item-after")
+                    .text("یافت نشد!");
+                return false;
+            }
+            options =
+                "<option value=\"select\">".concat(fa.select, "</option>") +
+                options;
+            $$("select#item_supplier_id").html(options);
+            if (id === "") {
+                $$("#s_id_c656535").find(".item-after").text(fa.select);
+            }
+        });
+    }
+
+    const handleCategory = async (e) => {
+        let id = ""
+         var options = "";
+        request.json(f7.params.home + "get-shop-categories/" + props.shopId, {}, function (fetchData, status, xhr) {
+            if (fetchData.length < 1) {
+                $$("select#item_cat_id").html("");
+                $$("#s_id_g656535")
+                    .find(".item-after")
+                    .text("یافت نشد!");
+                $$("#s_id_m656535").find("a").addClass("disabled");
+                $$("#s_id_t656535").find("a").removeClass("disabled");
+                return false;
+            }
+            fetchData.forEach(function (opt) {
+                id = opt.id;
+                options += "<option value=".concat(opt.id, "  ").concat(String(opt.id) === String(id) ? " selected" : "", " >").concat(opt.item_category, "</option>");
+            });
+            if (id !== "") {
+                $$("#s_id_g656535")
+                    .find(".item-after")
+                    .text(fetchData.filter(function (o) { return String(o.id) === String(id); })[0].item_category);
+            }
+            if (id !== "" && typeId !== "") {
+                store.dispatch("getType", {
+                    id: typeId,
+                    type_id: typeId,
+                });
+                store.dispatch("getModel", {
+                    id: typeId,
+                    mod_id: modelId,
+                });
+                store.dispatch("getSize", {
+                    id: typeId,
+                    size_id: size_id,
+                });
+            }
+            options =
+                "<option value=\"select\">".concat(fa.select, "</option>") +
+                options;
+            $$("select#item_cat_id").html(options);
+            if (id === "") {
+                $$("#s_id_g656535").find(".item-after").text(fa.select);
+            }
+        });
+    }
+
+    const handleSize = async (e) => {
+        let id = e.target.value;
+        $$("select#item_size_id").html("");
+        let options = "";
+        request.json(f7.params.home + "get-shop-sizes/" + typeId, function (fetchData) {
+            if (fetchData.length < 1) {
+                $$("select#item_size_id").html("");
+                $$("#s_id_s656535")
+                    .find(".item-after")
+                    .text("یافت نشد!");
+                $$("#s_id_s656535").find("a").removeClass("disabled");
+                return false;
+            }
+            fetchData.forEach(function (opt) {
+                options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(id)
+                    ? " selected"
+                    : "", ">").concat(opt.item_size, "</option>");
+            });
+            if (id !== "") {
+                $$("#s_id_s656535")
+                    .find(".item-after")
+                    .text(fetchData.filter(function (o) { return String(o.id) === String(id); })[0].item_size);
+            }
+            $$("#s_id_s656535").find("a").removeClass("disabled");
+            options =
+                "<option value=\"select\">".concat(fa.select, "</option>") +
+                options;
+            $$("select#item_size_id").html(options);
+            if (id === "")
+                $$("#s_id_s656535").find(".item-after").text(fa.select);
+        });
+    }
+
+    const handleModel = async (e) => {
+        let id = e.target.value;
+        $$("select#item_model_id").html("");
+        var options = "";
+        request.json(f7.params.home + "get-shop-models/" + typeId, {}, function (fetchData, status, xhr) {
+            if (fetchData.length < 1) {
+                $$("select#item_model_id").html("");
+                $$("#s_id_m656535")
+                    .find(".item-after")
+                    .text("یافت نشد!");
+                $$("#s_id_m656535").find("a").removeClass("disabled");
+                return false;
+            }
+            fetchData.forEach(function (opt) {
+                options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(id) ? " selected" : "", ">").concat(opt.item_model, "</option>");
+            });
+            if (id !== "") {
+                $$("#s_id_m656535")
+                    .find(".item-after")
+                    .text(fetchData.filter(function (o) { return String(o.id) === String(id); })[0].item_model);
+                    setModelId(id);
+            }
+            $$("#s_id_m656535").find("a").removeClass("disabled");
+            options =
+                "<option value=\"select\">".concat(fa.select, "</option>") +
+                options;
+            $$("select#item_model_id").html(options);
+            if (id === "") {
+                $$("#s_id_m656535").find(".item-after").text(fa.select);
+            }
+        });
+    }
     const clearImages = () => {
         store.dispatch("setImages", []);
         store.state.images = [];
@@ -323,7 +509,6 @@ export default (props) => {
         <Popup
             className={props.edit ? "edit-item" : "add-item"}
             noSwipeback
-
             onPopupOpened={handleHTML}
             onPopupOpen={loadFunctions}
             onPopupClose={clearImages}
@@ -621,6 +806,9 @@ export default (props) => {
                     <ListItem
                         title={fa.form.item_type}
                         smartSelect
+                        onChange={(e) => {
+                            console.log("Closed", e);
+                        }}
                         smartSelectParams={{
                             openIn: "popup",
                             scrollToSelectedItem: true,
@@ -698,6 +886,7 @@ export default (props) => {
                             scrollToSelectedItem: true,
                             popupCloseLinkText: fa.close_icon,
                             closeOnSelect: true,
+
                             renderItem(item) {
                                 if (item.value === itemDetails?.model_id) {
                                     item.selected = true;

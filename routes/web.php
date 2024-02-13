@@ -138,7 +138,7 @@ Route::get('/get-shop-suppliers/{id?}', [\App\Http\Controllers\ItemSuppliersCont
 Route::get('/get-shop-types/{id?}', [\App\Http\Controllers\ShopItemsController::class, 'getShopItemTypes'])->middleware('auth');
 Route::get('/get-shop-models/{id?}', [\App\Http\Controllers\ShopItemsController::class, 'getShopItemModels'])->middleware('auth');
 Route::get('/get-shop-sizes/{id?}', [\App\Http\Controllers\ShopItemsController::class, 'getShopItemSizes'])->middleware('auth');
-Route::get('/get-shop-colors/{id?}', [\App\Http\Controllers\ShopItemsController::class, 'getShopItemColors'])->middleware('auth');
+Route::get('/get-shop-colors', [\App\Http\Controllers\ShopItemsController::class, 'getShopItemColors'])->middleware('auth');
 Route::get('Shop/get-sell-list/{id}', [ShopsController::class, 'getSellsList'])->middleware('auth');
 Route::get('Shop/get-first-shop', [ShopsController::class, 'getFirstShop'])->middleware('auth');
 Route::get('confirm-sells', [ShopsController::class, 'confirmSell'])->middleware('auth');

@@ -595,188 +595,188 @@ var store = createStore({
             })
                 .open();
         },
-        getSupplier: function (_a, _b) {
-            var state = _a.state, dispatch = _a.dispatch;
-            var id = _b.id, _c = _b.sup_id, sup_id = _c === void 0 ? "" : _c;
-            dispatch("setLoading", true);
-            state.shopId = id;
-            var options = "";
-            request.json(f7.params.home + "get-shop-suppliers/" + id, {}, function (fetchData, status, xhr) {
-                state.suppliers = fetchData;
-                fetchData.forEach(function (opt) {
-                    options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(sup_id) ? "selected" : "", " >").concat(opt.item_supplier, "</option>");
-                });
-                if (sup_id !== "") {
-                    $$("#s_id_c656535")
-                        .find(".item-after")
-                        .text(fetchData.filter(function (o) { return String(o.id) === String(sup_id); })[0].item_supplier);
-                }
-                if (fetchData.length < 1) {
-                    $$("select#item_supplier_id").html("");
-                    $$("#s_id_c656535")
-                        .find(".item-after")
-                        .text("یافت نشد!");
-                    return false;
-                }
-                options =
-                    "<option value=\"select\">".concat(fa.select, "</option>") +
-                        options;
-                $$("select#item_supplier_id").html(options);
-                if (sup_id === "") {
-                    $$("#s_id_c656535").find(".item-after").text(fa.select);
-                }
-                dispatch("setLoading", false);
-            });
-        },
+        // getSupplier: function (_a, _b) {
+        //     var state = _a.state, dispatch = _a.dispatch;
+        //     var id = _b.id, _c = _b.sup_id, sup_id = _c === void 0 ? "" : _c;
+        //     dispatch("setLoading", true);
+        //     state.shopId = id;
+        //     var options = "";
+        //     request.json(f7.params.home + "get-shop-suppliers/" + id, {}, function (fetchData, status, xhr) {
+        //         state.suppliers = fetchData;
+        //         fetchData.forEach(function (opt) {
+        //             options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(sup_id) ? "selected" : "", " >").concat(opt.item_supplier, "</option>");
+        //         });
+        //         if (sup_id !== "") {
+        //             $$("#s_id_c656535")
+        //                 .find(".item-after")
+        //                 .text(fetchData.filter(function (o) { return String(o.id) === String(sup_id); })[0].item_supplier);
+        //         }
+        //         if (fetchData.length < 1) {
+        //             $$("select#item_supplier_id").html("");
+        //             $$("#s_id_c656535")
+        //                 .find(".item-after")
+        //                 .text("یافت نشد!");
+        //             return false;
+        //         }
+        //         options =
+        //             "<option value=\"select\">".concat(fa.select, "</option>") +
+        //                 options;
+        //         $$("select#item_supplier_id").html(options);
+        //         if (sup_id === "") {
+        //             $$("#s_id_c656535").find(".item-after").text(fa.select);
+        //         }
+        //         dispatch("setLoading", false);
+        //     });
+        // },
         getCategory: function (_a, _b) {
-            var state = _a.state, dispatch = _a.dispatch;
-            var id = _b.id, _c = _b.cat_id, cat_id = _c === void 0 ? "" : _c, _d = _b.type_id, type_id = _d === void 0 ? "" : _d, _e = _b.mod_id, mod_id = _e === void 0 ? "" : _e, _f = _b.size_id, size_id = _f === void 0 ? "" : _f;
-            var options = "";
-            dispatch("setLoading", true);
-            request.json(f7.params.home + "get-shop-categories/" + id, {}, function (fetchData, status, xhr) {
-                if (fetchData.length < 1) {
-                    $$("select#item_cat_id").html("");
-                    $$("#s_id_g656535")
-                        .find(".item-after")
-                        .text("یافت نشد!");
-                    $$("#s_id_m656535").find("a").addClass("disabled");
-                    $$("#s_id_t656535").find("a").removeClass("disabled");
-                    return false;
-                }
-                fetchData.forEach(function (opt) {
-                    options += "<option value=".concat(opt.id, "  ").concat(String(opt.id) === String(cat_id) ? " selected" : "", " >").concat(opt.item_category, "</option>");
-                });
-                if (cat_id !== "") {
-                    $$("#s_id_g656535")
-                        .find(".item-after")
-                        .text(fetchData.filter(function (o) { return String(o.id) === String(cat_id); })[0].item_category);
-                }
-                if (cat_id !== "" && type_id !== "") {
-                    store.dispatch("getType", {
-                        id: cat_id,
-                        type_id: type_id,
-                    });
-                    store.dispatch("getModel", {
-                        id: type_id,
-                        mod_id: mod_id,
-                    });
-                    store.dispatch("getSize", {
-                        id: type_id,
-                        size_id: size_id,
-                    });
-                }
-                options =
-                    "<option value=\"select\">".concat(fa.select, "</option>") +
-                        options;
-                $$("select#item_cat_id").html(options);
-                if (cat_id === "") {
-                    $$("#s_id_g656535").find(".item-after").text(fa.select);
-                }
-                dispatch("setLoading", false);
-            });
+            // var state = _a.state, dispatch = _a.dispatch;
+            // var id = _b.id, _c = _b.cat_id, cat_id = _c === void 0 ? "" : _c, _d = _b.type_id, type_id = _d === void 0 ? "" : _d, _e = _b.mod_id, mod_id = _e === void 0 ? "" : _e, _f = _b.size_id, size_id = _f === void 0 ? "" : _f;
+            // var options = "";
+            // dispatch("setLoading", true);
+            // request.json(f7.params.home + "get-shop-categories/" + id, {}, function (fetchData, status, xhr) {
+            //     if (fetchData.length < 1) {
+            //         $$("select#item_cat_id").html("");
+            //         $$("#s_id_g656535")
+            //             .find(".item-after")
+            //             .text("یافت نشد!");
+            //         $$("#s_id_m656535").find("a").addClass("disabled");
+            //         $$("#s_id_t656535").find("a").removeClass("disabled");
+            //         return false;
+            //     }
+            //     fetchData.forEach(function (opt) {
+            //         options += "<option value=".concat(opt.id, "  ").concat(String(opt.id) === String(cat_id) ? " selected" : "", " >").concat(opt.item_category, "</option>");
+            //     });
+            //     if (cat_id !== "") {
+            //         $$("#s_id_g656535")
+            //             .find(".item-after")
+            //             .text(fetchData.filter(function (o) { return String(o.id) === String(cat_id); })[0].item_category);
+            //     }
+            //     if (cat_id !== "" && type_id !== "") {
+            //         store.dispatch("getType", {
+            //             id: cat_id,
+            //             type_id: type_id,
+            //         });
+            //         store.dispatch("getModel", {
+            //             id: type_id,
+            //             mod_id: mod_id,
+            //         });
+            //         store.dispatch("getSize", {
+            //             id: type_id,
+            //             size_id: size_id,
+            //         });
+            //     }
+            //     options =
+            //         "<option value=\"select\">".concat(fa.select, "</option>") +
+            //             options;
+            //     $$("select#item_cat_id").html(options);
+            //     if (cat_id === "") {
+            //         $$("#s_id_g656535").find(".item-after").text(fa.select);
+            //     }
+            //     dispatch("setLoading", false);
+            // });
         },
-        getColor: function (_a, _b) {
-            var state = _a.state, dispatch = _a.dispatch;
-            var id = _b.id, _c = _b.col_id, col_id = _c === void 0 ? "" : _c;
-            dispatch("setLoading", true);
-            var options = "";
-            request.json(f7.params.home + "get-shop-colors/" + id, {}, function (fetchData, status, xhr) {
-                fetchData.forEach(function (opt) {
-                    options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(col_id) ? " selected" : "", ">").concat(opt.item_color, "</option>");
-                });
-                if (col_id !== "") {
-                    $$("#s_id_r656535")
-                        .find(".item-after")
-                        .text(fetchData.filter(function (o) { return String(o.id) === String(col_id); })[0].item_color);
-                }
-                if (fetchData.length < 1) {
-                    $$("select#item_color_id").html("");
-                    $$("#s_id_r656535")
-                        .find(".item-after")
-                        .text("یافت نشد!");
-                    return false;
-                }
-                options =
-                    "<option value=\"select\">".concat(fa.select, "</option>") +
-                        options;
-                $$("select#item_color_id").html(options);
-                if (col_id === "") {
-                    $$("#s_id_r656535").find(".item-after").text(fa.select);
-                }
-                dispatch("setLoading", false);
-            });
-        },
-        getType: function (_a, _b) {
-            var state = _a.state, dispatch = _a.dispatch;
-            var id = _b.id, _c = _b.type_id, type_id = _c === void 0 ? "" : _c;
-            dispatch("setLoading", true);
-            $$("select#item_type_id").html("");
-            var options = "";
-            request.json(f7.params.home + "get-shop-types/" + id, {}, function (fetchData, status, xhr) {
-                if (fetchData.length < 1) {
-                    $$("select#item_type_id").html("");
-                    $$("#s_id_t656535")
-                        .find(".item-after")
-                        .text("یافت نشد!");
-                    $$("#s_id_m656535").find("a").addClass("disabled");
-                    $$("#s_id_s656535").find("a").addClass("disabled");
-                    $$("#s_id_t656535").find("a").removeClass("disabled");
-                    return false;
-                }
-                fetchData.forEach(function (opt) {
-                    options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(type_id)
-                        ? " selected"
-                        : "", ">").concat(opt.item_type, "</option>");
-                });
-                if (type_id !== "") {
-                    $$("#s_id_t656535")
-                        .find(".item-after")
-                        .text(fetchData.filter(function (o) { return String(o.id) === String(type_id); })[0].item_type);
-                }
-                $$("#s_id_t656535").find("a").removeClass("disabled");
-                options =
-                    "<option value=\"select\">".concat(fa.select, "</option>") +
-                        options;
-                $$("select#item_type_id").html(options);
-                if (type_id === "") {
-                    $$("#s_id_t656535").find(".item-after").text(fa.select);
-                }
-                dispatch("setLoading", false);
-            });
-        },
+        // getColor: function (_a, _b) {
+        //     var state = _a.state, dispatch = _a.dispatch;
+        //     var id = _b.id, _c = _b.col_id, col_id = _c === void 0 ? "" : _c;
+        //     dispatch("setLoading", true);
+        //     var options = "";
+        //     request.json(f7.params.home + "get-shop-colors/" + id, {}, function (fetchData, status, xhr) {
+        //         fetchData.forEach(function (opt) {
+        //             options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(col_id) ? " selected" : "", ">").concat(opt.item_color, "</option>");
+        //         });
+        //         if (col_id !== "") {
+        //             $$("#s_id_r656535")
+        //                 .find(".item-after")
+        //                 .text(fetchData.filter(function (o) { return String(o.id) === String(col_id); })[0].item_color);
+        //         }
+        //         if (fetchData.length < 1) {
+        //             $$("select#item_color_id").html("");
+        //             $$("#s_id_r656535")
+        //                 .find(".item-after")
+        //                 .text("یافت نشد!");
+        //             return false;
+        //         }
+        //         options =
+        //             "<option value=\"select\">".concat(fa.select, "</option>") +
+        //                 options;
+        //         $$("select#item_color_id").html(options);
+        //         if (col_id === "") {
+        //             $$("#s_id_r656535").find(".item-after").text(fa.select);
+        //         }
+        //         dispatch("setLoading", false);
+        //     });
+        // },
+        // getType: function (_a, _b) {
+        //     var state = _a.state, dispatch = _a.dispatch;
+        //     var id = _b.id, _c = _b.type_id, type_id = _c === void 0 ? "" : _c;
+        //     dispatch("setLoading", true);
+        //     $$("select#item_type_id").html("");
+        //     var options = "";
+        //     request.json(f7.params.home + "get-shop-types/" + id, {}, function (fetchData, status, xhr) {
+        //         if (fetchData.length < 1) {
+        //             $$("select#item_type_id").html("");
+        //             $$("#s_id_t656535")
+        //                 .find(".item-after")
+        //                 .text("یافت نشد!");
+        //             $$("#s_id_m656535").find("a").addClass("disabled");
+        //             $$("#s_id_s656535").find("a").addClass("disabled");
+        //             $$("#s_id_t656535").find("a").removeClass("disabled");
+        //             return false;
+        //         }
+        //         fetchData.forEach(function (opt) {
+        //             options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(type_id)
+        //                 ? " selected"
+        //                 : "", ">").concat(opt.item_type, "</option>");
+        //         });
+        //         if (type_id !== "") {
+        //             $$("#s_id_t656535")
+        //                 .find(".item-after")
+        //                 .text(fetchData.filter(function (o) { return String(o.id) === String(type_id); })[0].item_type);
+        //         }
+        //         $$("#s_id_t656535").find("a").removeClass("disabled");
+        //         options =
+        //             "<option value=\"select\">".concat(fa.select, "</option>") +
+        //                 options;
+        //         $$("select#item_type_id").html(options);
+        //         if (type_id === "") {
+        //             $$("#s_id_t656535").find(".item-after").text(fa.select);
+        //         }
+        //         dispatch("setLoading", false);
+        //     });
+        // },
         getModel: function (_a, _b) {
-            var state = _a.state, dispatch = _a.dispatch;
-            var id = _b.id, _c = _b.mod_id, mod_id = _c === void 0 ? "" : _c;
-            dispatch("setLoading", true);
-            $$("select#item_model_id").html("");
-            var options = "";
-            request.json(f7.params.home + "get-shop-models/" + id, {}, function (fetchData, status, xhr) {
-                if (fetchData.length < 1) {
-                    $$("select#item_model_id").html("");
-                    $$("#s_id_m656535")
-                        .find(".item-after")
-                        .text("یافت نشد!");
-                    $$("#s_id_m656535").find("a").removeClass("disabled");
-                    return false;
-                }
-                fetchData.forEach(function (opt) {
-                    options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(mod_id) ? " selected" : "", ">").concat(opt.item_model, "</option>");
-                });
-                if (mod_id !== "") {
-                    $$("#s_id_m656535")
-                        .find(".item-after")
-                        .text(fetchData.filter(function (o) { return String(o.id) === String(mod_id); })[0].item_model);
-                }
-                $$("#s_id_m656535").find("a").removeClass("disabled");
-                options =
-                    "<option value=\"select\">".concat(fa.select, "</option>") +
-                        options;
-                $$("select#item_model_id").html(options);
-                if (mod_id === "") {
-                    $$("#s_id_m656535").find(".item-after").text(fa.select);
-                }
-                dispatch("setLoading", false);
-            });
+            // var state = _a.state, dispatch = _a.dispatch;
+            // var id = _b.id, _c = _b.mod_id, mod_id = _c === void 0 ? "" : _c;
+            // dispatch("setLoading", true);
+            // $$("select#item_model_id").html("");
+            // var options = "";
+            // request.json(f7.params.home + "get-shop-models/" + id, {}, function (fetchData, status, xhr) {
+            //     if (fetchData.length < 1) {
+            //         $$("select#item_model_id").html("");
+            //         $$("#s_id_m656535")
+            //             .find(".item-after")
+            //             .text("یافت نشد!");
+            //         $$("#s_id_m656535").find("a").removeClass("disabled");
+            //         return false;
+            //     }
+            //     fetchData.forEach(function (opt) {
+            //         options += "<option value=".concat(opt.id, " ").concat(String(opt.id) === String(mod_id) ? " selected" : "", ">").concat(opt.item_model, "</option>");
+            //     });
+            //     if (mod_id !== "") {
+            //         $$("#s_id_m656535")
+            //             .find(".item-after")
+            //             .text(fetchData.filter(function (o) { return String(o.id) === String(mod_id); })[0].item_model);
+            //     }
+            //     $$("#s_id_m656535").find("a").removeClass("disabled");
+            //     options =
+            //         "<option value=\"select\">".concat(fa.select, "</option>") +
+            //             options;
+            //     $$("select#item_model_id").html(options);
+            //     if (mod_id === "") {
+            //         $$("#s_id_m656535").find(".item-after").text(fa.select);
+            //     }
+            //     dispatch("setLoading", false);
+            // });
         },
         getSize: function (_a, _b) {
             var state = _a.state, dispatch = _a.dispatch;

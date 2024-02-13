@@ -334,9 +334,9 @@ class ShopItemsController extends Controller
         return \Response::json($a);
     }
 
-    public function getShopItemColors($id)
+    public function getShopItemColors()
     {
-        return ItemColor::where('shop_id', $id)->orderBy('item_color')->get();
+        return ItemColor::orderBy('item_color')->get();
     }
     //Item Color End
 
